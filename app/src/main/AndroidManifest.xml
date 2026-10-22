@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Location, and nothing else. It is used for one fix at a time, when a button is pressed,
+      from the GPS alone. There is no INTERNET permission, no background location and no
+      foreground service, so the position cannot leave the phone and is never read while
+      the app is closed. COARSE is declared because Android 12 requires the pair to be asked
+      for together; the app itself needs FINE.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <queries>
+        <!-- The other apps that act on selected text, so the note field's selection menu can list them. -->
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@drawable/ic_launcher_mudita"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ic_launcher_mudita"
+        android:supportsRtl="false"
+        android:theme="@style/Theme.App">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.App"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

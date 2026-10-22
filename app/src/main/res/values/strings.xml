@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Parked</string>
+
+    <!-- Top bar: icon description read aloud by a screen reader -->
+    <string name="cd_about">About</string>
+
+    <!-- The button that does the one thing the app is for -->
+    <string name="mark">Mark this spot</string>
+    <!-- The same button (and How far?) while waiting for the GPS; pressing it gives up -->
+    <string name="finding_stop">Finding your position… tap to stop</string>
+    <string name="empty">Nothing marked yet. Press the button when you leave the car.</string>
+
+    <!-- Why a press did not give a position -->
+    <string name="notice_no_fix">No position yet. A roof or a garage hides the sky; try again nearer an opening.</string>
+    <string name="notice_off">Location is switched off on this phone. Switch it on in Settings, then press again.</string>
+    <string name="notice_precise">This needs precise location. Allow it for Parked in Settings, under Apps, then press again.</string>
+
+    <!-- The shown spot -->
+    <!-- The name a maps app puts on the pin -->
+    <string name="spot_label">Parked</string>
+    <!-- %1$s is a distance such as 8 m -->
+    <string name="good_to">Good to %1$s</string>
+    <string name="add_note">Add a note, such as level 3, row C</string>
+    <string name="how_far">How far?</string>
+    <!-- %1$s is a distance (180 m), %2$s a compass point (NE): how far away the car is and which way -->
+    <string name="far_result">%1$s %2$s</string>
+    <string name="far_here">About here</string>
+    <!-- %1$s is a distance: how sure the phone is of where you stand now -->
+    <string name="far_accuracy">Your position is good to %1$s</string>
+    <string name="open_in_maps">Open in maps</string>
+    <string name="share">Share</string>
+    <string name="forget">Forget this spot</string>
+    <string name="forget_armed">Forget this spot — tap again</string>
+    <string name="earlier">Earlier</string>
+    <string name="no_maps">There is no maps app on this phone to open that with.</string>
+    <string name="no_share">Nothing on this phone can take a shared message.</string>
+
+    <!-- How long ago -->
+    <string name="age_now">Just now</string>
+    <string name="age_min">%1$d min ago</string>
+    <string name="age_h">%1$d h ago</string>
+    <string name="age_h_min">%1$d h %2$d min ago</string>
+    <string name="age_d">%1$d d ago</string>
+    <string name="age_d_h">%1$d d %2$d h ago</string>
+
+    <!-- The eight points of the compass, clockwise from north -->
+    <string-array name="compass">
+        <item>N</item>
+        <item>NE</item>
+        <item>E</item>
+        <item>SE</item>
+        <item>S</item>
+        <item>SW</item>
+        <item>W</item>
+        <item>NW</item>
+    </string-array>
+
+    <!-- The note dialog -->
+    <string name="note_title">Note</string>
+    <string name="note_hint">Level 3, row C</string>
+    <string name="note_save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Asking for location: said here before Android asks -->
+    <string name="rationale_title">Where are you?</string>
+    <string name="rationale">Parked asks the phone\'s GPS for your position once, when you press a button, and keeps it on this phone. It never watches in the background and has no way to go online.</string>
+    <string name="rationale_go">Continue</string>
+
+    <!-- About dialog. Keep the names of the app, people, projects and licences as they are -->
+    <!-- %1$s is the version number -->
+    <string name="about_title">Parked %1$s</string>
+    <string name="about_what">Remembers where you left the car. It reads your position only when you press a button; nothing leaves the phone, and the app has no internet permission.</string>
+    <string name="about_privacy">Your last five spots are kept on this phone, and removed with the app.</string>
+    <string name="about_licence">GNU General Public License v3</string>
+    <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
+    <!-- The donation link label, beside a drawing of a llama. A fixed phrase: a verb and an object -->
+    <string name="about_feed_the_llamas">feed the llamas</string>
+    <!-- Toast when no app on the phone can open a web link -->
+    <string name="about_no_browser">There is no browser on this phone to open that with.</string>
+    <string name="about_close">Close</string>
+</resources>
