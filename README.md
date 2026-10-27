@@ -17,8 +17,10 @@ ships with.
 
 ## How it works
 
-- **Mark this spot** takes one fresh position from the phone's GPS and keeps it, with how long
-  ago and the date and time. A note, such as "level 3, row C", can be added afterwards.
+- **Mark this spot** takes a fresh position from the phone's GPS and keeps it, with how long
+  ago and the date and time. The first position a GPS gives is often its roughest, so it waits
+  for one good to about 15 m, or 20 seconds after the first, and keeps the best; it always says
+  how exact the spot is. A note, such as "level 3, row C", can be added afterwards.
 - **How far?** takes another position and says how far away the car is and which way, as a
   distance and a compass point: "180 m NE". If you are within the margin of error it says
   "About here" rather than a number it cannot stand behind, and it always says how sure the
@@ -28,6 +30,8 @@ ships with.
 - **Share** sends the spot as plain text: a line to read, a `geo:` link and a web map link.
 - **Forget this spot** asks once more, in its own face, before it does.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.
+- Distances are in metres or feet as the phone's country uses them (from its SIM card, or its
+  language setting), and Settings can fix them to either.
 
 A garage or a roof hides the sky, and the GPS may not find a position there. The app says so
 rather than guessing: mark the spot at the entrance, and put the level in the note.
@@ -35,8 +39,8 @@ rather than guessing: mark the spot at the entrance, and put the level in the no
 ## What it does not do
 
 It collects nothing and sends nothing. It has **no internet permission**, so it cannot. The
-only permission it asks for is location, and only when you press a button: one position per
-press, from the GPS alone, with no background location, no service and no waiting in the
+only permission it asks for is location, and only when you press a button: up to 45 seconds
+of the GPS per press, from the GPS alone, with no background location, no service and no waiting in the
 background. Where you parked stays in the app's private storage on the phone, is left out of
 backups, and goes when the app does. See [PRIVACY.md](PRIVACY.md).
 

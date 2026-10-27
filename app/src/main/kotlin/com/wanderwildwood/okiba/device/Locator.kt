@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.CancellationSignal
+import android.location.LocationListener
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import androidx.core.content.ContextCompat
+import com.wanderwildwood.okiba.core.BestFix
 
 /** What a request for one position came to. */
 sealed interface FixResult {
@@ -22,64 +24,88 @@ sealed interface FixResult {
 }
 
 /**
- * One fresh position, on request, from the GPS alone.
+ * A fresh position, on request, from the GPS alone.
  *
- * Nothing here listens in the background: a single `getCurrentLocation` call per press, which
- * gives up after [TIMEOUT_MS]. The GPS provider is asked for by name, so the phone's network
- * location service is never involved and nothing leaves the phone.
+ * Nothing here listens in the background: the GPS is listened to from a press until a position
+ * good to [BestFix.GOOD_ENOUGH_M] comes, or [BestFix.SETTLE_MS] after the first one, when the
+ * best seen is kept; with nothing at all after [TIMEOUT_MS] it gives up. Then it stops
+ * listening. The GPS provider is asked for by name, so the phone's network location service is
+ * never involved and nothing leaves the phone.
  */
 class Locator(private val context: Context) {
 
-    private var signal: CancellationSignal? = null
-    private var timeout: Runnable? = null
+    private var listener: LocationListener? = null
     private val main = Handler(Looper.getMainLooper())
+    private val lm get() = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     fun hasPermission(): Boolean =
         ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
-    /** Asks once; [onResult] is called exactly once on the main thread unless [cancel] comes first. */
+    /** Asks; [onResult] is called exactly once on the main thread unless [cancel] comes first. */
     fun request(onResult: (FixResult) -> Unit) {
         cancel()
         if (!hasPermission()) return onResult(FixResult.NotAllowed)
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lm = lm
         if (!lm.isLocationEnabled || !lm.allProviders.contains(LocationManager.GPS_PROVIDER)) {
             return onResult(FixResult.Off)
         }
-        val s = CancellationSignal()
-        signal = s
+        val picker = BestFix<FixResult.Fix>()
         var done = false
-        fun finish(r: FixResult) {
-            if (done) return
-            done = true
-            timeout?.let(main::removeCallbacks)
-            timeout = null
-            signal = null
-            onResult(r)
-        }
-        val t = Runnable { s.cancel() }
-        timeout = t
-        main.postDelayed(t, TIMEOUT_MS)
-        try {
-            lm.getCurrentLocation(LocationManager.GPS_PROVIDER, s, ContextCompat.getMainExecutor(context)) { loc: Location? ->
-                if (signal !== s) return@getCurrentLocation  // stopped by the person, or superseded
-                finish(
-                    if (loc == null) FixResult.NoFix
-                    else FixResult.Fix(loc.latitude, loc.longitude, if (loc.hasAccuracy()) loc.accuracy else 0f, System.currentTimeMillis()),
-                )
+        lateinit var l: LocationListener
+        val settle = Runnable { picker.best?.let { finish(l, it, onResult) } }
+        val timeout = Runnable { finish(l, picker.best ?: FixResult.NoFix, onResult) }
+        l = object : LocationListener {
+            override fun onLocationChanged(loc: Location) {
+                if (listener !== this || done) return
+                val acc = if (loc.hasAccuracy()) loc.accuracy else 0f
+                val fix = FixResult.Fix(loc.latitude, loc.longitude, acc, System.currentTimeMillis())
+                val first = picker.settlesAt() == null
+                if (picker.offer(fix, acc, SystemClock.elapsedRealtime())) {
+                    done = true
+                    finish(this, picker.best!!, onResult)
+                } else if (first) {
+                    main.postDelayed(settle, BestFix.SETTLE_MS)
+                }
             }
+
+            override fun onProviderDisabled(provider: String) {
+                if (listener === this && !done) {
+                    done = true
+                    finish(this, picker.best ?: FixResult.Off, onResult)
+                }
+            }
+
+            override fun onProviderEnabled(provider: String) {}
+
+            @Deprecated("Deprecated in Java")
+            override fun onStatusChanged(provider: String?, status: Int, extras: android.os.Bundle?) {}
+        }
+        listener = l
+        pending = listOf(settle, timeout)
+        main.postDelayed(timeout, TIMEOUT_MS)
+        try {
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1_000L, 0f, l, Looper.getMainLooper())
         } catch (e: SecurityException) {
-            finish(FixResult.NotAllowed)
+            finish(l, FixResult.NotAllowed, onResult)
         } catch (e: IllegalArgumentException) {
-            finish(FixResult.Off)
+            finish(l, FixResult.Off, onResult)
         }
     }
 
-    /** Stops waiting. The pending callback, if it still arrives, is dropped. */
+    private var pending: List<Runnable> = emptyList()
+
+    private fun finish(l: LocationListener, r: FixResult, onResult: (FixResult) -> Unit) {
+        if (listener !== l) return
+        cancel()
+        onResult(r)
+    }
+
+    /** Stops listening. Anything still on its way is dropped. */
     fun cancel() {
-        timeout?.let(main::removeCallbacks)
-        timeout = null
-        signal?.cancel()
-        signal = null
+        pending.forEach(main::removeCallbacks)
+        pending = emptyList()
+        listener?.let { runCatching { lm.removeUpdates(it) } }
+        listener = null
     }
 
     companion object {

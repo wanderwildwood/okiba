@@ -18,5 +18,15 @@ sealed interface Age {
                 else -> Days((minutes / (24 * 60)).toInt(), ((minutes / 60) % 24).toInt())
             }
         }
+
+        /**
+         * How long until the next of [anchors] crosses a whole minute from [now], so that a line
+         * counted from it ("4 min ago", "12 min left") changes then and the screen is redrawn
+         * once a minute, not more. With no anchors, the next minute of the clock.
+         */
+        fun nextTickMillis(now: Long, anchors: List<Long>): Long {
+            val all = anchors.ifEmpty { listOf(0L) }
+            return all.minOf { 60_000L - Math.floorMod(now - it, 60_000L) }
+        }
     }
 }

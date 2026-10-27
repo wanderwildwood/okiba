@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Location, and nothing else. It is used for one fix at a time, when a button is pressed,
-      from the GPS alone. There is no INTERNET permission, no background location and no
+      Location. It is used when a button is pressed, from the GPS alone, listened to for up to
+      45 seconds until a position is sure enough, then let go. There is no INTERNET permission, no background location and no
       foreground service, so the position cannot leave the phone and is never read while
       the app is closed. COARSE is declared because Android 12 requires the pair to be asked
       for together; the app itself needs FINE.

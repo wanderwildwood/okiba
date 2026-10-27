@@ -7,14 +7,21 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalCursorBlinkEnabled
+import androidx.lifecycle.repeatOnLifecycle
+import com.wanderwildwood.okiba.core.Age
+import com.wanderwildwood.okiba.ui.SettingsScreen
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mudita.mmd.ThemeMMD
@@ -26,8 +33,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ThemeMMD(colorScheme = monochrome) {
-                Parked()
+            // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
+            // for as long as the note field has focus.
+            CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
+                ThemeMMD(colorScheme = monochrome) {
+                    Parked()
+                }
             }
         }
     }
@@ -46,29 +57,43 @@ private fun Parked(vm: OkibaViewModel = viewModel()) {
         if (job != null && granted[Manifest.permission.ACCESS_FINE_LOCATION] == true) vm.start(job) else vm.denied()
     }
 
-    // The age shown is read when the app comes to the front. Nothing ticks while it sits there.
+    var settingsOpen by rememberSaveable { mutableStateOf(false) }
+
+    // "4 min ago" is read when the app comes to the front, and again each time it would change
+    // while the app is in front: once a minute, on the minute it turns, and never in the
+    // background. One redraw a minute is what an e-ink panel can spare.
     val owner = LocalLifecycleOwner.current
-    DisposableEffect(owner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) vm.refreshClock()
+    val anchors = listOfNotNull(state.history.shown?.timeMillis)
+    LaunchedEffect(owner, anchors) {
+        owner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            while (true) {
+                vm.refreshClock()
+                delay(Age.nextTickMillis(System.currentTimeMillis(), anchors) + 50L)
+            }
         }
-        owner.lifecycle.addObserver(observer)
-        onDispose { owner.lifecycle.removeObserver(observer) }
     }
 
     fun press(job: Job) {
         if (vm.hasPermission) vm.start(job) else { asking = job; rationale = true }
     }
 
-    MainScreen(
-        state = state,
-        onMark = { press(Job.Mark) },
-        onHowFar = { press(Job.Far) },
-        onStop = vm::stop,
-        onShow = vm::show,
-        onForget = vm::forget,
-        onNote = vm::setNote,
-    )
+    if (settingsOpen) {
+        BackHandler { settingsOpen = false }
+        SettingsScreen(state = state, onBack = { settingsOpen = false }, onUnits = vm::setUnits)
+    } else {
+        MainScreen(
+            state = state,
+            onMark = { press(Job.Mark) },
+            onHowFar = { press(Job.Far) },
+            onStop = vm::stop,
+            onShow = vm::show,
+            onForget = vm::forget,
+            onUndo = vm::undoForget,
+            onNote = vm::setNote,
+            onSay = vm::say,
+            onSettings = { settingsOpen = true },
+        )
+    }
 
     if (rationale) {
         RationaleDialog(

@@ -44,7 +44,7 @@ fun BarButton(icon: ImageVector, description: String, onClick: () -> Unit) {
 
 /**
  * A press that asks once, in its own face: the first press arms it and changes what it says,
- * the second does it. It disarms itself after four seconds, so a stray press does not leave
+ * the second does it. It disarms itself after six seconds, so a stray press does not leave
  * a live trigger for whoever picks the phone up next.
  */
 @Composable
@@ -52,7 +52,7 @@ fun rememberArmed(): Armed {
     val a = remember { Armed() }
     LaunchedEffect(a.on) {
         if (!a.on) return@LaunchedEffect
-        delay(4000)
+        delay(6000)
         a.on = false
     }
     return a

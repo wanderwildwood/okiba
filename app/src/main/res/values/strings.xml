@@ -4,6 +4,8 @@
 
     <!-- Top bar: icon description read aloud by a screen reader -->
     <string name="cd_about">About</string>
+    <string name="cd_settings">Settings</string>
+    <string name="cd_back">Back</string>
 
     <!-- The button that does the one thing the app is for -->
     <string name="mark">Mark this spot</string>
@@ -33,6 +35,8 @@
     <string name="forget">Forget this spot</string>
     <string name="forget_armed">Forget this spot — tap again</string>
     <string name="earlier">Earlier</string>
+    <!-- Shown after Forget this spot, until the next press; pressing it puts the spot back -->
+    <string name="forgotten_undo">Spot forgotten — tap to undo</string>
     <string name="no_maps">There is no maps app on this phone to open that with.</string>
     <string name="no_share">Nothing on this phone can take a shared message.</string>
 
@@ -64,19 +68,31 @@
 
     <!-- Asking for location: said here before Android asks -->
     <string name="rationale_title">Where are you?</string>
-    <string name="rationale">Parked asks the phone\'s GPS for your position once, when you press a button, and keeps it on this phone. It never watches in the background and has no way to go online.</string>
+    <string name="rationale">Parked asks the phone\'s GPS for your position when you press a button, for up to 45 seconds until it is sure enough, and keeps it on this phone. It never watches in the background and has no way to go online.</string>
     <string name="rationale_go">Continue</string>
 
     <!-- About dialog. Keep the names of the app, people, projects and licences as they are -->
     <!-- %1$s is the version number -->
     <string name="about_title">Parked %1$s</string>
-    <string name="about_what">Remembers where you left the car. It reads your position only when you press a button; nothing leaves the phone, and the app has no internet permission.</string>
-    <string name="about_privacy">Your last five spots are kept on this phone, and removed with the app.</string>
+    <string name="about_what">Remembers where you left the car.</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_privacy">Everything you put in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you.</string>
+    <string name="about_privacy_more">Location is read from the phone\'s GPS only after you press Mark this spot or How far?, for up to 45 seconds, and never in the background. Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them. There are no ads, no analytics and no tracking.</string>
+    <string name="about_terms_title">Terms</string>
+    <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
     <!-- The donation link label, beside a drawing of a llama. A fixed phrase: a verb and an object -->
     <string name="about_feed_the_llamas">feed the llamas</string>
-    <!-- Toast when no app on the phone can open a web link -->
-    <string name="about_no_browser">There is no browser on this phone to open that with.</string>
+    <!-- Said in place of the link when no app on the phone can open a web address; %1$s is the address -->
+    <string name="about_no_browser">Nothing here opens web pages — %1$s</string>
     <string name="about_close">Close</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_units">Distances</string>
+    <!-- %1$s is Metres or Feet: what the phone's country uses -->
+    <string name="units_auto">As this phone\'s country: %1$s</string>
+    <string name="units_metres">Metres</string>
+    <string name="units_feet">Feet and miles</string>
 </resources>

@@ -3,7 +3,6 @@ package com.wanderwildwood.okiba.ui
 import android.content.Intent
 import android.net.Uri
 import android.text.format.DateFormat
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,6 +40,7 @@ import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.okiba.Far
 import com.wanderwildwood.okiba.Job
 import com.wanderwildwood.okiba.Notice
+import com.wanderwildwood.okiba.Say
 import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.UiState
 import com.wanderwildwood.okiba.core.Age
@@ -61,13 +62,16 @@ fun MainScreen(
     onStop: () -> Unit,
     onShow: (Spot) -> Unit,
     onForget: (Spot) -> Unit,
+    onUndo: () -> Unit,
     onNote: (Spot, String) -> Unit,
+    onSay: (Say?) -> Unit,
+    onSettings: () -> Unit,
 ) {
     val context = LocalContext.current
     var aboutOpen by remember { mutableStateOf(false) }
     var noteFor by remember { mutableStateOf<Spot?>(null) }
     val shown = state.history.shown
-    val imperial = remember { Geo.usesImperial(Locale.getDefault().country) }
+    val imperial = state.imperial
     val is24 = remember { DateFormat.is24HourFormat(context) }
 
     // Showing a different spot, or marking one, starts the screen over from its top.
@@ -79,7 +83,10 @@ fun MainScreen(
         topBar = {
             TopAppBarMMD(
                 title = { TextMMD(text = stringResource(R.string.app_name)) },
-                actions = { BarButton(Icons.Info, stringResource(R.string.cd_about)) { aboutOpen = true } },
+                actions = {
+                    BarButton(Icons.Settings, stringResource(R.string.cd_settings), onSettings)
+                    BarButton(Icons.Info, stringResource(R.string.cd_about)) { aboutOpen = true }
+                },
             )
         },
     ) { padding ->
@@ -120,6 +127,21 @@ fun MainScreen(
                 }
             }
 
+            if (state.undo != null) {
+                item(key = "undo") {
+                    TextMMD(
+                        text = stringResource(R.string.forgotten_undo),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .clickable(onClick = onUndo)
+                            .padding(top = 14.dp, bottom = 10.dp),
+                    )
+                }
+            }
+
             if (shown == null) {
                 item(key = "empty") {
                     TextMMD(
@@ -148,13 +170,27 @@ fun MainScreen(
                         val label = stringResource(R.string.spot_label)
                         val whenText = whenText(shown.timeMillis, is24)
                         OutlinedButtonMMD(
-                            onClick = { openInMaps(context, shown, label) },
+                            onClick = { onSay(if (openInMaps(context, shown, label)) null else Say.NoMaps) },
                             modifier = Modifier.weight(3f).height(52.dp),
                         ) { TextMMD(text = stringResource(R.string.open_in_maps), style = MaterialTheme.typography.bodySmall, maxLines = 1) }
                         OutlinedButtonMMD(
-                            onClick = { share(context, shown, label, whenText) },
+                            onClick = { onSay(if (share(context, shown, label, whenText)) null else Say.NoShare) },
                             modifier = Modifier.weight(2f).height(52.dp),
                         ) { TextMMD(text = stringResource(R.string.share), style = MaterialTheme.typography.bodySmall, maxLines = 1) }
+                    }
+                }
+                state.say?.let { say ->
+                    item(key = "say") {
+                        TextMMD(
+                            text = stringResource(
+                                when (say) {
+                                    Say.NoMaps -> R.string.no_maps
+                                    Say.NoShare -> R.string.no_share
+                                },
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 10.dp),
+                        )
                     }
                 }
                 item(key = "forget-${shown.timeMillis}") {
@@ -177,14 +213,15 @@ fun MainScreen(
                     items(others.size, key = { others[it].timeMillis }) { i ->
                         val s = others[i]
                         Column(
-                            modifier = Modifier.fillMaxWidth().clickable { onShow(s) }.padding(vertical = 10.dp),
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable { onShow(s) }.padding(vertical = 10.dp),
+                            verticalArrangement = Arrangement.Center,
                         ) {
                             TextMMD(
                                 text = ageText(Age.of(state.now - s.timeMillis)) + " · " + whenText(s.timeMillis, is24),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                             if (s.note.isNotBlank()) {
-                                TextMMD(text = s.note, style = MaterialTheme.typography.labelSmall)
+                                TextMMD(text = s.note, style = MaterialTheme.typography.bodyMedium)
                             }
                         }
                     }
@@ -213,10 +250,13 @@ private fun SpotBlock(spot: Spot, now: Long, is24: Boolean, imperial: Boolean, o
         if (spot.accuracyMeters > 0f) {
             TextMMD(
                 text = stringResource(R.string.good_to, Geo.formatAccuracy(spot.accuracyMeters, imperial)),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
-        Column(Modifier.fillMaxWidth().clickable(onClick = onNote).padding(top = 10.dp, bottom = 6.dp)) {
+        Column(
+            Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClick = onNote).padding(top = 10.dp, bottom = 6.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
             if (spot.note.isBlank()) {
                 TextMMD(text = stringResource(R.string.add_note), style = MaterialTheme.typography.bodyMedium)
             } else {
@@ -249,7 +289,7 @@ private fun FarBlock(working: Boolean, far: Far?, imperial: Boolean, onHowFar: (
                 )
             }
             if (far.accuracyMeters > 0f) {
-                TextMMD(text = stringResource(R.string.far_accuracy, acc), style = MaterialTheme.typography.labelSmall)
+                TextMMD(text = stringResource(R.string.far_accuracy, acc), style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -300,18 +340,15 @@ private fun whenText(millis: Long, is24: Boolean): String =
     DateTimeFormatter.ofPattern(if (is24) "EEE d MMM HH:mm" else "EEE d MMM h:mm a", Locale.getDefault())
         .format(Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()))
 
-private fun openInMaps(context: android.content.Context, spot: Spot, label: String) {
+/** Hands the spot to a maps app; false when the phone has none, for the screen to say so. */
+private fun openInMaps(context: android.content.Context, spot: Spot, label: String): Boolean {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(spot.geoUri(label))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { context.startActivity(intent) }.onFailure {
-        Toast.makeText(context, context.getString(R.string.no_maps), Toast.LENGTH_LONG).show()
-    }
+    return runCatching { context.startActivity(intent) }.isSuccess
 }
 
-private fun share(context: android.content.Context, spot: Spot, label: String, whenText: String) {
+private fun share(context: android.content.Context, spot: Spot, label: String, whenText: String): Boolean {
     val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, spot.shareText(label, whenText))
-    runCatching {
+    return runCatching {
         context.startActivity(Intent.createChooser(send, null).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-    }.onFailure {
-        Toast.makeText(context, context.getString(R.string.no_share), Toast.LENGTH_LONG).show()
-    }
+    }.isSuccess
 }
