@@ -7,7 +7,10 @@ import com.wanderwildwood.okiba.core.Geo
 import com.wanderwildwood.okiba.core.History
 import com.wanderwildwood.okiba.core.Spot
 import com.wanderwildwood.okiba.core.cleanNote
+import com.wanderwildwood.okiba.core.Meter
+import com.wanderwildwood.okiba.core.MeterChoice
 import com.wanderwildwood.okiba.core.Units
+import com.wanderwildwood.okiba.meter.MeterAlarms
 import com.wanderwildwood.okiba.data.Settings
 import com.wanderwildwood.okiba.data.Store
 import com.wanderwildwood.okiba.device.Region
@@ -49,6 +52,9 @@ data class UiState(
     val imperial: Boolean = false,
     /** Whether the phone's own country measures in feet, for saying what Automatic means. */
     val regionImperial: Boolean = false,
+    /** The parking meter, while one is set or has ended and not been cleared. */
+    val meter: Meter? = null,
+    val warnMinutes: Int = Settings.DEFAULT_WARN,
 )
 
 class OkibaViewModel(app: Application) : AndroidViewModel(app) {
@@ -62,6 +68,8 @@ class OkibaViewModel(app: Application) : AndroidViewModel(app) {
             units = settings.units,
             imperial = settings.units.imperial(region),
             regionImperial = Units.Auto.imperial(region),
+            meter = store.meter(),
+            warnMinutes = settings.warnMinutes,
         ),
     )
     val state: StateFlow<UiState> = _state
@@ -75,7 +83,24 @@ class OkibaViewModel(app: Application) : AndroidViewModel(app) {
 
     val hasPermission: Boolean get() = locator.hasPermission()
 
-    fun refreshClock() = _state.update { it.copy(now = System.currentTimeMillis()) }
+    /** The clock, and the meter as the alarms have left it. */
+    fun refreshClock() = _state.update { it.copy(now = System.currentTimeMillis(), meter = store.meter()) }
+
+    fun startMeter(choice: MeterChoice) {
+        val m = MeterAlarms.start(getApplication(), choice)
+        _state.update { it.copy(meter = m, now = System.currentTimeMillis()) }
+    }
+
+    /** Cancels a running meter, or clears one that has ended. */
+    fun cancelMeter() {
+        MeterAlarms.cancel(getApplication())
+        _state.update { it.copy(meter = null) }
+    }
+
+    fun setWarn(minutes: Int) {
+        settings.warnMinutes = minutes
+        _state.update { it.copy(warnMinutes = minutes) }
+    }
 
     /** One fresh fix for [job]; the permission has been dealt with by the caller. */
     fun start(job: Job) {

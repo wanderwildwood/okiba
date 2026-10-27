@@ -26,6 +26,7 @@ import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.UiState
 import com.wanderwildwood.okiba.core.Units
+import com.wanderwildwood.okiba.data.Settings
 
 /** The few settings, one row each, showing what they are set to. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,8 +35,10 @@ fun SettingsScreen(
     state: UiState,
     onBack: () -> Unit,
     onUnits: (Units) -> Unit,
+    onWarn: (Int) -> Unit,
 ) {
     var unitsOpen by remember { mutableStateOf(false) }
+    var warnOpen by remember { mutableStateOf(false) }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -53,6 +56,9 @@ fun SettingsScreen(
             item(key = "units") {
                 SettingRow(stringResource(R.string.settings_units), unitsLabel(state.units, state.regionImperial)) { unitsOpen = true }
             }
+            item(key = "warn") {
+                SettingRow(stringResource(R.string.settings_warn), warnLabel(state.warnMinutes)) { warnOpen = true }
+            }
         }
     }
 
@@ -65,7 +71,20 @@ fun SettingsScreen(
             onDismiss = { unitsOpen = false },
         )
     }
+    if (warnOpen) {
+        ChoiceDialog(
+            title = stringResource(R.string.settings_warn),
+            choices = Settings.WARN_CHOICES.map { it to warnLabel(it) },
+            chosen = state.warnMinutes,
+            onChoose = { onWarn(it); warnOpen = false },
+            onDismiss = { warnOpen = false },
+        )
+    }
 }
+
+@Composable
+private fun warnLabel(minutes: Int): String =
+    if (minutes <= 0) stringResource(R.string.warn_off) else stringResource(R.string.warn_before, minutes)
 
 @Composable
 private fun unitsLabel(u: Units, regionImperial: Boolean): String = when (u) {

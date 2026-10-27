@@ -29,6 +29,12 @@ ships with.
   address, so HERE WeGo, Organic Maps, OsmAnd or any other can take it from there.
 - **Share** sends the spot as plain text: a line to read, a `geo:` link and a web map link.
 - **Forget this spot** asks once more, in its own face, before it does.
+- **Meter**: 30 min, 1 h, 2 h, another length, or the time on the ticket ("Ends at…"). The app
+  rings a few minutes before the meter ends (5 by default; Settings changes it or turns it off)
+  and again when it ends, with the phone's alarm sound and a buzz, and lights the screen over the
+  lock screen. It works alone, with no other app, and sets its alarm again if the phone is
+  restarted. On a Kompakt it says once to switch Parked on in DuraSpeed, which would otherwise
+  shut it down and its alarm with it.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.
 - Distances are in metres or feet as the phone's country uses them (from its SIM card, or its
   language setting), and Settings can fix them to either.
@@ -39,10 +45,11 @@ rather than guessing: mark the spot at the entrance, and put the level in the no
 ## What it does not do
 
 It collects nothing and sends nothing. It has **no internet permission**, so it cannot. The
-only permission it asks for is location, and only when you press a button: up to 45 seconds
-of the GPS per press, from the GPS alone, with no background location, no service and no waiting in the
-background. Where you parked stays in the app's private storage on the phone, is left out of
-backups, and goes when the app does. See [PRIVACY.md](PRIVACY.md).
+only permission it asks you for is location, and only when you press a button: up to 45 seconds
+of the GPS per press, from the GPS alone, with no background location and no service. Where you parked stays in the app's private storage on the phone, is left out of
+backups, and goes when the app does. The meter needs alarms, notifications, the ringing screen
+over the lock screen and a start after a restart, and uses them for nothing else. See
+[PRIVACY.md](PRIVACY.md).
 
 ## Building
 

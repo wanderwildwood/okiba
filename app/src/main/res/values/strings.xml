@@ -40,6 +40,53 @@
     <string name="no_maps">There is no maps app on this phone to open that with.</string>
     <string name="no_share">Nothing on this phone can take a shared message.</string>
 
+    <!-- The parking meter -->
+    <string name="meter_heading">Meter</string>
+    <string name="meter_other">Other length</string>
+    <string name="meter_ends_at_choice">Ends at…</string>
+    <string name="meter_other_title">How long is the meter?</string>
+    <string name="meter_ends_at_title">When does the meter end?</string>
+    <string name="meter_start">Start</string>
+    <!-- %1$s is a time of day, such as 14:30 -->
+    <string name="meter_ends">Meter ends at %1$s</string>
+    <string name="meter_ended">Meter ended at %1$s</string>
+    <string name="meter_warn_at">Warns at %1$s</string>
+    <string name="meter_cancel">Cancel the meter</string>
+    <string name="meter_cancel_armed">Cancel the meter — tap again</string>
+    <string name="meter_clear">Clear</string>
+    <!-- Lengths on the buttons and in the length dialog -->
+    <string name="length_min">%1$d min</string>
+    <string name="length_h">%1$d h</string>
+    <string name="length_h_min">%1$d h %2$d min</string>
+    <!-- How long a running meter has left -->
+    <string name="left_min">%1$d min left</string>
+    <string name="left_h">%1$d h left</string>
+    <string name="left_h_min">%1$d h %2$d min left</string>
+
+    <!-- The ring: notification and the screen over the lock screen -->
+    <string name="channel_ring">Meter alarm</string>
+    <string name="channel_ring_about">The warning before a parking meter ends, and its end.</string>
+    <string name="channel_quiet">Meter, quietly</string>
+    <!-- %1$d is minutes -->
+    <string name="ring_warn_title">Meter ends in %1$d min</string>
+    <string name="ring_end_title">Meter ended</string>
+    <!-- %1$s is a time of day -->
+    <string name="ring_warn_text">The meter ends at %1$s</string>
+    <string name="ring_end_text">The meter ran out at %1$s</string>
+    <string name="ring_stop">Stop</string>
+    <string name="ring_open">Open Parked</string>
+
+    <!-- What would stop the meter ringing, each with its mend -->
+    <string name="setup_duraspeed">One step so the meter rings: the phone\'s DuraSpeed setting can shut Parked down, and its alarm with it. Open DuraSpeed, tap Open, and switch Parked on.</string>
+    <string name="setup_duraspeed_open">Open DuraSpeed</string>
+    <string name="setup_duraspeed_done">It\'s switched on</string>
+    <string name="setup_notifications">Notifications are off for Parked, so the meter cannot ring.</string>
+    <string name="setup_turn_on">Turn on</string>
+    <string name="setup_exact">Parked is not allowed to set exact alarms, so the meter can ring minutes late.</string>
+    <string name="setup_allow">Allow</string>
+    <string name="setup_full_screen">Parked is not allowed to fill the screen, so the meter rings with only a notification.</string>
+    <string name="setup_cannot_open">This phone has no screen for that setting.</string>
+
     <!-- How long ago -->
     <string name="age_now">Just now</string>
     <string name="age_min">%1$d min ago</string>
@@ -74,10 +121,12 @@
     <!-- About dialog. Keep the names of the app, people, projects and licences as they are -->
     <!-- %1$s is the version number -->
     <string name="about_title">Parked %1$s</string>
-    <string name="about_what">Remembers where you left the car.</string>
+    <string name="about_what">Remembers where you left the car, and rings before the meter runs out.</string>
     <string name="about_privacy_title">Privacy</string>
     <string name="about_privacy">Everything you put in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you.</string>
-    <string name="about_privacy_more">Location is read from the phone\'s GPS only after you press Mark this spot or How far?, for up to 45 seconds, and never in the background. Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them. There are no ads, no analytics and no tracking.</string>
+    <string name="about_privacy_more">Location is read from the phone\'s GPS only after you press Mark this spot or How far?, for up to 45 seconds, and never in the background.</string>
+    <string name="about_privacy_spots">Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them.</string>
+    <string name="about_privacy_meter">The meter uses the phone\'s alarms and notifications to ring, and starts again after a restart only to set a running meter\'s alarm again; it reads no location. There are no ads, no analytics and no tracking.</string>
     <string name="about_terms_title">Terms</string>
     <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
     <string name="about_licence">GNU General Public License v3</string>
@@ -95,4 +144,8 @@
     <string name="units_auto">As this phone\'s country: %1$s</string>
     <string name="units_metres">Metres</string>
     <string name="units_feet">Feet and miles</string>
+    <string name="settings_warn">Warn before the meter ends</string>
+    <string name="warn_off">No warning</string>
+    <!-- %1$d is minutes -->
+    <string name="warn_before">%1$d min before</string>
 </resources>

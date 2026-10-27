@@ -62,6 +62,8 @@ fun AboutDialog(onDismiss: () -> Unit) {
             item { Heading(stringResource(R.string.about_privacy_title)) }
             item { TextMMD(text = stringResource(R.string.about_privacy), style = MaterialTheme.typography.bodyMedium) }
             item { TextMMD(text = stringResource(R.string.about_privacy_more), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 6.dp)) }
+            item { TextMMD(text = stringResource(R.string.about_privacy_spots), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 6.dp)) }
+            item { TextMMD(text = stringResource(R.string.about_privacy_meter), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 6.dp)) }
             item { Heading(stringResource(R.string.about_terms_title)) }
             item { TextMMD(text = stringResource(R.string.about_terms), style = MaterialTheme.typography.bodyMedium) }
             item {

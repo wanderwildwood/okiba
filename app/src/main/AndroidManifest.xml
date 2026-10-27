@@ -11,11 +11,30 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!--
+      The parking meter, from 0.2.0. Still no INTERNET permission.
+      Exact alarms, so the meter rings at its minute: USE_EXACT_ALARM from Android 13, and
+      SCHEDULE_EXACT_ALARM before it (given at install on Android 12, the Kompakt's).
+    -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+    <!-- An alarm does not survive a restart: this is how a running meter's is set again. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- The ring is a notification; Android 13 and later ask for it. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- The ringing screen over the lock screen, which is what turns the screen on. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
 
     <queries>
+        <!-- DuraSpeed, the Kompakt's background manager: only to say whether it is there. -->
+        <package android:name="com.mediatek.duraspeed" />
         <!-- The other apps that act on selected text, so the note field's selection menu can list them. -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
@@ -42,6 +61,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- The ringing screen over the lock screen. Its own task, out of Recents. -->
+        <activity
+            android:name=".meter.RingActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity="com.wanderwildwood.okiba.ringing"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.App" />
+
+        <receiver
+            android:name=".meter.MeterReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".meter.SystemReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

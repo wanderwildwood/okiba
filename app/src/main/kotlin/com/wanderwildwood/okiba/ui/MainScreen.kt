@@ -45,6 +45,7 @@ import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.UiState
 import com.wanderwildwood.okiba.core.Age
 import com.wanderwildwood.okiba.core.Geo
+import com.wanderwildwood.okiba.core.MeterChoice
 import com.wanderwildwood.okiba.core.NOTE_MAX
 import com.wanderwildwood.okiba.core.Spot
 import java.time.Instant
@@ -66,6 +67,8 @@ fun MainScreen(
     onNote: (Spot, String) -> Unit,
     onSay: (Say?) -> Unit,
     onSettings: () -> Unit,
+    onStartMeter: (MeterChoice) -> Unit,
+    onCancelMeter: () -> Unit,
 ) {
     val context = LocalContext.current
     var aboutOpen by remember { mutableStateOf(false) }
@@ -150,6 +153,7 @@ fun MainScreen(
                         modifier = Modifier.padding(top = 24.dp),
                     )
                 }
+                item(key = "meter") { MeterBlock(state.meter, state.now, state.warnMinutes, onStartMeter, onCancelMeter) }
             } else {
                 item(key = "spot") {
                     SpotBlock(shown, state.now, is24, imperial) { noteFor = shown }
@@ -193,6 +197,7 @@ fun MainScreen(
                         )
                     }
                 }
+                item(key = "meter") { MeterBlock(state.meter, state.now, state.warnMinutes, onStartMeter, onCancelMeter) }
                 item(key = "forget-${shown.timeMillis}") {
                     ArmedRow(
                         label = stringResource(R.string.forget),

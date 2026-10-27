@@ -63,7 +63,7 @@ private fun Parked(vm: OkibaViewModel = viewModel()) {
     // while the app is in front: once a minute, on the minute it turns, and never in the
     // background. One redraw a minute is what an e-ink panel can spare.
     val owner = LocalLifecycleOwner.current
-    val anchors = listOfNotNull(state.history.shown?.timeMillis)
+    val anchors = listOfNotNull(state.history.shown?.timeMillis, state.meter?.endAt, state.meter?.warnAt)
     LaunchedEffect(owner, anchors) {
         owner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             while (true) {
@@ -79,7 +79,7 @@ private fun Parked(vm: OkibaViewModel = viewModel()) {
 
     if (settingsOpen) {
         BackHandler { settingsOpen = false }
-        SettingsScreen(state = state, onBack = { settingsOpen = false }, onUnits = vm::setUnits)
+        SettingsScreen(state = state, onBack = { settingsOpen = false }, onUnits = vm::setUnits, onWarn = vm::setWarn)
     } else {
         MainScreen(
             state = state,
@@ -92,6 +92,8 @@ private fun Parked(vm: OkibaViewModel = viewModel()) {
             onNote = vm::setNote,
             onSay = vm::say,
             onSettings = { settingsOpen = true },
+            onStartMeter = vm::startMeter,
+            onCancelMeter = vm::cancelMeter,
         )
     }
 
