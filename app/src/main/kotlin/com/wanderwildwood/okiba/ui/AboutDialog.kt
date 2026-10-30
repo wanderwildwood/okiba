@@ -38,16 +38,19 @@ import com.wanderwildwood.okiba.R
 @Composable
 fun AboutDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
-    // Which address had nothing to open it, to say so in place of the words.
-    var dead by remember { mutableStateOf<String?>(null) }
+    var licences by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    // The link opens through the shared guarded opener: a real browser, or the plain message.
     fun open(url: String, shown: String) {
-        val opened = runCatching {
-            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }.isSuccess
-        dead = if (opened) null else shown
+        openLink(context, url, context.getString(R.string.about_no_browser_address, shown))
     }
 
-    EInkDialog(onDismiss = onDismiss) {
+    // Back in the Licences page returns to the About rather than leaving both.
+    EInkDialog(onDismiss = { if (licences) licences = false else onDismiss() }) {
+        if (licences) {
+            val licenceRoom = (LocalConfiguration.current.screenHeightDp - 165).coerceIn(120, 420).dp
+            LicencesPage(onBack = { licences = false }, room = licenceRoom)
+            return@EInkDialog
+        }
         TextMMD(
             text = stringResource(R.string.about_title, BuildConfig.VERSION_NAME),
             style = MaterialTheme.typography.bodyLarge,
@@ -69,8 +72,15 @@ fun AboutDialog(onDismiss: () -> Unit) {
             item {
                 Column(Modifier.padding(top = 12.dp)) {
                     TextMMD(text = stringResource(R.string.about_licence), style = MaterialTheme.typography.bodyMedium)
-                    TextMMD(text = stringResource(R.string.about_icons), style = MaterialTheme.typography.bodyMedium)
                 }
+            }
+            item {
+                TextMMD(
+                    text = stringResource(R.string.about_licences),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth().clickable { licences = true }.heightIn(min = 48.dp).wrapContentHeight(Alignment.CenterVertically),
+                )
             }
             item {
                 // The source opens in the browser, the one press here that leaves the app.
@@ -84,9 +94,6 @@ fun AboutDialog(onDismiss: () -> Unit) {
                         .clickable { open("https://$SOURCE", SOURCE) }
                         .wrapContentHeight(Alignment.CenterVertically),
                 )
-            }
-            dead?.let { d ->
-                item { TextMMD(text = stringResource(R.string.about_no_browser, d), style = MaterialTheme.typography.bodyMedium) }
             }
             item { Llama(::open) }
         }

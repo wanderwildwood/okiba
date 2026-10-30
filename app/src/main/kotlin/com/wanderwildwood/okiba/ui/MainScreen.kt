@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
@@ -75,7 +77,9 @@ fun MainScreen(
     var noteFor by remember { mutableStateOf<Spot?>(null) }
     val shown = state.history.shown
     val imperial = state.imperial
-    val is24 = remember { DateFormat.is24HourFormat(context) }
+    // Read again when the configuration changes, so a clock format changed in Android's settings shows at once.
+    val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+    val is24 = remember(configuration) { DateFormat.is24HourFormat(context) }
 
     // Showing a different spot, or marking one, starts the screen over from its top.
     val list = rememberLazyListState()
@@ -127,6 +131,21 @@ fun MainScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 12.dp),
                     )
+                }
+                if (notice != Notice.NoFix) {
+                    // A permission refused for good has no other way back than Android's settings.
+                    item(key = "notice-settings") {
+                        TextMMD(
+                            text = stringResource(R.string.open_app_settings),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { openAppSettings(context) }
+                                .heightIn(min = 48.dp)
+                                .wrapContentHeight(Alignment.CenterVertically),
+                        )
+                    }
                 }
             }
 
@@ -341,9 +360,14 @@ private fun ageText(age: Age): String = when (age) {
     is Age.Days -> if (age.h == 0) stringResource(R.string.age_d, age.d) else stringResource(R.string.age_d_h, age.d, age.h)
 }
 
-private fun whenText(millis: Long, is24: Boolean): String =
-    DateTimeFormatter.ofPattern(if (is24) "EEE d MMM HH:mm" else "EEE d MMM h:mm a", Locale.getDefault())
+private fun whenText(millis: Long, is24: Boolean): String {
+    // The phone's own order of day, month and time for its language, with the 12 or 24 hour
+    // clock the reader chose, not an English pattern for everyone.
+    val locale = Locale.getDefault()
+    val pattern = DateFormat.getBestDateTimePattern(locale, if (is24) "EEEdMMMHm" else "EEEdMMMhm")
+    return DateTimeFormatter.ofPattern(pattern, locale)
         .format(Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()))
+}
 
 /** Hands the spot to a maps app; false when the phone has none, for the screen to say so. */
 private fun openInMaps(context: android.content.Context, spot: Spot, label: String): Boolean {
