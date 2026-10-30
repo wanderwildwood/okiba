@@ -14,7 +14,7 @@ ships with.
 
 | | | | |
 |---|---|---|---|
-| ![A marked spot: when, where, a note](screenshots/01-marked.png) | ![How far, and which way](screenshots/02-how-far.png) | ![The spots before it](screenshots/03-earlier.png) | ![About](screenshots/04-about.png) |
+| ![A marked spot: when, where, a note](screenshots/01-marked.png) | ![How far, and which way](screenshots/02-how-far.png) | ![Settings](screenshots/03-settings.png) | ![About](screenshots/04-about.png) |
 
 ## How it works
 
