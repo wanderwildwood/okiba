@@ -1,7 +1,8 @@
 # 置き場 okiba — Parked
 
-Remembers where you left the car. Press one button when you get out and the phone marks the
-spot; press another on your way back and it tells you how far it is and which way. Built for the
+Remembers where you left the car, and how long you have. Press one button when you get out and
+the phone marks the spot; press another on your way back and it tells you how far it is and which
+way. A parking meter built in rings before your time is up. Built for the
 [Mudita Kompakt](https://mudita.com/products/kompakt/), and it will install on any Android 12
 device.
 
