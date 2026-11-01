@@ -73,7 +73,6 @@ fun MainScreen(
     onCancelMeter: () -> Unit,
 ) {
     val context = LocalContext.current
-    var aboutOpen by remember { mutableStateOf(false) }
     var noteFor by remember { mutableStateOf<Spot?>(null) }
     val shown = state.history.shown
     val imperial = state.imperial
@@ -92,7 +91,6 @@ fun MainScreen(
                 title = { TextMMD(text = stringResource(R.string.app_name)) },
                 actions = {
                     BarButton(Icons.Settings, stringResource(R.string.cd_settings), onSettings)
-                    BarButton(Icons.Info, stringResource(R.string.cd_about)) { aboutOpen = true }
                 },
             )
         },
@@ -255,7 +253,6 @@ fun MainScreen(
         }
     }
 
-    if (aboutOpen) AboutDialog { aboutOpen = false }
     noteFor?.let { spot ->
         NoteDialog(spot.note, onSave = { onNote(spot, it); noteFor = null }, onDismiss = { noteFor = null })
     }
