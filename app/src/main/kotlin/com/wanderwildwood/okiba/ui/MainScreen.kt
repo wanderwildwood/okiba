@@ -99,7 +99,8 @@ fun MainScreen(
     ) { padding ->
         PagedColumn(
             state = list,
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp),
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 20.dp, end = 12.dp),
         ) {
             item(key = "mark") {
                 val working = state.working
