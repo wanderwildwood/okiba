@@ -51,3 +51,13 @@ fun canReachBrowser(answer: String?, candidates: List<String?>): Boolean =
 /** Whether the package that answered a web address is something a person can browse with. */
 fun isRealBrowser(packageName: String?): Boolean =
     packageName != null && packageName != "android" && !packageName.contains("webview_shell")
+
+/** Opens this app's own page in Android's settings, where a permission refused for good can be given. */
+fun openAppSettings(context: Context) {
+    runCatching {
+        context.startActivity(
+            Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+        )
+    }
+}
