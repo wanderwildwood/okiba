@@ -27,7 +27,7 @@ class Settings(context: Context) {
         set(v) { prefs.edit().putLong("stop_seen", v).apply() }
 
     companion object {
-        const val DEFAULT_WARN = 5
+        const val DEFAULT_WARN = 10
         val WARN_CHOICES = listOf(0, 1, 2, 5, 10, 15)
     }
 }

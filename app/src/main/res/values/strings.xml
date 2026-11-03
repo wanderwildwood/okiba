@@ -48,8 +48,8 @@
     <string name="meter_ends_at_title">When does the meter end?</string>
     <string name="meter_start">Start</string>
     <!-- %1$s is a time of day, such as 14:30 -->
-    <string name="meter_ends">Meter ends at %1$s</string>
-    <string name="meter_ended">Meter ended at %1$s</string>
+    <string name="meter_ends">Meter runs out at %1$s</string>
+    <string name="meter_ended">Meter ran out at %1$s</string>
     <string name="meter_warn_at">Warns at %1$s</string>
     <string name="meter_cancel">Cancel the meter</string>
     <string name="meter_cancel_armed">Cancel the meter — tap again</string>
@@ -68,10 +68,10 @@
     <string name="channel_ring_about">The warning before a parking meter ends, and its end.</string>
     <string name="channel_quiet">Meter, quietly</string>
     <!-- %1$d is minutes -->
-    <string name="ring_warn_title">Meter ends in %1$d min</string>
+    <string name="ring_warn_title">Meter runs out in %1$d min</string>
     <string name="ring_end_title">Meter ended</string>
     <!-- %1$s is a time of day -->
-    <string name="ring_warn_text">The meter ends at %1$s</string>
+    <string name="ring_warn_text">The meter runs out at %1$s</string>
     <string name="ring_end_text">The meter ran out at %1$s</string>
     <string name="ring_stop">Stop</string>
     <string name="ring_open">Open Parked</string>

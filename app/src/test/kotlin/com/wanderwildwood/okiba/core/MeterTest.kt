@@ -152,4 +152,12 @@ class MeterTest {
         assertNull(Meter.decode(null))
         assertNull(Meter.decode("garbage"))
     }
+
+    @Test fun theDefaultWarningIsTenMinutesAndOffered() {
+        assertEquals(10, com.wanderwildwood.okiba.data.Settings.DEFAULT_WARN)
+        assertTrue(10 in com.wanderwildwood.okiba.data.Settings.WARN_CHOICES)
+        val now = 1_000_000L
+        val m = MeterMath.start(MeterChoice.Minutes(60), com.wanderwildwood.okiba.data.Settings.DEFAULT_WARN, now, utc)
+        assertEquals(now + 50 * min, m.warnAt)
+    }
 }
