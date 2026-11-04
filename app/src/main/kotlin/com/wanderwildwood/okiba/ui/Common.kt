@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -23,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
-import kotlinx.coroutines.delay
 
 /** An icon in a top bar, with a target a thumb can find. */
 @Composable
@@ -44,32 +41,20 @@ fun BarButton(icon: ImageVector, description: String, onClick: () -> Unit) {
 
 /**
  * A press that asks once, in its own face: the first press arms it and changes what it says,
- * the second does it. It disarms itself after six seconds, so a stray press does not leave
- * a live trigger for whoever picks the phone up next.
+ * the second does it. It stays armed until the next other touch, Back, the screen going off
+ * or leaving, so a stray press never leaves a live trigger behind (shared Armed.kt).
  */
 @Composable
 fun rememberArmed(): Armed {
-    val a = remember { Armed() }
-    LaunchedEffect(a.on) {
-        if (!a.on) return@LaunchedEffect
-        delay(6000)
-        a.on = false
-    }
-    return a
+    val f = rememberArmedFlag()
+    return remember(f) { Armed(f) }
 }
 
-class Armed {
-    var on by mutableStateOf(false)
+class Armed(private val f: ArmedFlag) {
+    var on by f
 
     /** Arms on the first press, and runs [action] on the second. */
-    fun press(action: () -> Unit) {
-        if (on) {
-            on = false
-            action()
-        } else {
-            on = true
-        }
-    }
+    fun press(action: () -> Unit) = f.press(action)
 }
 
 

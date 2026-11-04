@@ -31,6 +31,7 @@ import com.wanderwildwood.okiba.core.MeterRing
 import com.wanderwildwood.okiba.data.Store
 import com.wanderwildwood.okiba.ui.monochrome
 import java.lang.ref.WeakReference
+import com.wanderwildwood.okiba.ui.ArmedScope
 
 /**
  * The ringing screen, over the lock screen: what rang, the time the meter ends, the note of the
@@ -55,15 +56,17 @@ class RingActivity : ComponentActivity() {
         val note = store.load().shown?.note.orEmpty()
         setContent {
             ThemeMMD(colorScheme = monochrome) {
-                Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
-                    Ring(title, text, note, onStop = {
-                        Ringing.stop(this)
-                        finish()
-                    }, onOpen = {
-                        Ringing.stop(this)
-                        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                        finish()
-                    })
+                ArmedScope {
+                    Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
+                        Ring(title, text, note, onStop = {
+                            Ringing.stop(this)
+                            finish()
+                        }, onOpen = {
+                            Ringing.stop(this)
+                            startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            finish()
+                        })
+                    }
                 }
             }
         }

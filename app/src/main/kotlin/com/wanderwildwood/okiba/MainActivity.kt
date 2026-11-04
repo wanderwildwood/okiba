@@ -28,6 +28,7 @@ import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.okiba.ui.MainScreen
 import com.wanderwildwood.okiba.ui.RationaleDialog
 import com.wanderwildwood.okiba.ui.monochrome
+import com.wanderwildwood.okiba.ui.ArmedScope
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
             // for as long as the note field has focus.
             CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
                 ThemeMMD(colorScheme = monochrome) {
-                    Parked()
+                    ArmedScope { Parked() }
                 }
             }
         }
