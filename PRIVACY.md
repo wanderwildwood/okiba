@@ -42,7 +42,7 @@ Kompakt:
   is changed. Nothing else is done then.
 
 The running meter (when it was set, when it ends, when it warns) is kept in the same private
-storage as the spots and goes when the meter is cancelled or cleared. The app also asks Android
+storage as the spots and goes when the meter is canceled or cleared. The app also asks Android
 whether DuraSpeed, the Kompakt's background manager, is installed, and reads Android's own record
 of when the app was last stopped by the system, only to say whether DuraSpeed needs Parked
 switched on in its list; neither leaves the phone.
@@ -56,7 +56,7 @@ only the app itself.
 The About dialog's source address and its last line open a web address in your browser, and
 only when you press them.
 
-Whether distances are in metres or feet follows the country of the phone's SIM card, or of its
+Whether distances are in meters or feet follows the country of the phone's SIM card, or of its
 language setting when there is no SIM; this is read on the phone and goes nowhere. Settings can
 fix it to one or the other.
 

@@ -37,7 +37,7 @@ ships with.
   restarted. On a Kompakt it says once to switch Parked on in DuraSpeed, which would otherwise
   shut it down and its alarm with it.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.
-- Distances are in metres or feet as the phone's country uses them (from its SIM card, or its
+- Distances are in meters or feet as the phone's country uses them (from its SIM card, or its
   language setting), and Settings can fix them to either.
 
 A garage or a roof hides the sky, and the GPS may not find a position there. The app says so
@@ -73,7 +73,7 @@ For updates without doing this by hand, add this repository to
 
     https://github.com/wanderwildwood/okiba
 
-## Licence
+## License
 
 GPL-3.0-only. See [LICENSE](LICENSE).
 
