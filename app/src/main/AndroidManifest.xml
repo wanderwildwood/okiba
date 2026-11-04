@@ -3,8 +3,8 @@
 
     <!--
       Location. It is used when a button is pressed, from the GPS alone, listened to for up to
-      45 seconds until a position is sure enough, then let go. There is no INTERNET permission, no background location and no
-      foreground service, so the position cannot leave the phone and is never read while
+      45 seconds until a position is sure enough, then let go. There is no INTERNET permission and no
+      background location, so the position cannot leave the phone and is never read while
       the app is closed. COARSE is declared because Android 12 requires the pair to be asked
       for together; the app itself needs FINE.
     -->
@@ -27,6 +27,9 @@
     <!-- The ringing screen over the lock screen, which is what turns the screen on. -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- The service that plays the ring until Stop is pressed, and keeps the phone awake for it. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -68,7 +71,8 @@
             </intent-filter>
         </activity>
 
-        <!-- The ringing screen over the lock screen. Its own task, out of Recents. -->
+        <!-- The ringing screen over the lock screen. Its own task, out of Recents. The screen
+             waking can change its configuration; it is kept, not drawn again from scratch. -->
         <activity
             android:name=".meter.RingActivity"
             android:exported="false"
@@ -78,7 +82,14 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true"
             android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|smallestScreenSize|density|uiMode"
             android:theme="@style/Theme.App" />
+
+        <!-- Plays the ring while it rings, and only then. -->
+        <service
+            android:name=".meter.RingService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
         <receiver
             android:name=".meter.MeterReceiver"

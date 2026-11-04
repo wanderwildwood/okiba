@@ -29,10 +29,13 @@ Kompakt:
 
 - **Alarms** (`USE_EXACT_ALARM`, and `SCHEDULE_EXACT_ALARM` on Android 12 and older): to ring at
   the minute the meter ends, and at the warning before it.
-- **Notifications** (`POST_NOTIFICATIONS`): the ring is a notification, with the phone's alarm
+- **Notifications** (`POST_NOTIFICATIONS`): the ring shows as a notification, with the phone's alarm
   sound and a buzz (`VIBRATE`).
 - **Showing over the lock screen** (`USE_FULL_SCREEN_INTENT`): the ringing screen comes up and
   turns the screen on, so the ring is seen as well as heard.
+- **Ringing until you answer** (`FOREGROUND_SERVICE`, `WAKE_LOCK`): while the meter rings, and
+  only then, a small service plays the alarm sound and keeps the phone awake for it, until you
+  press Stop or two minutes go by.
 - **Starting after a restart** (`RECEIVE_BOOT_COMPLETED`): an alarm does not survive the phone
   being switched off, so when it starts again the app sets a running meter's alarm again, and
   rings at once if the time came while it was off. The same happens when the clock or time zone

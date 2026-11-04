@@ -81,19 +81,21 @@ object MeterAlarms {
     )
 }
 
-/** The meter's alarm going off, and Stop pressed on its notification. */
+/** The meter's alarm going off, Stop pressed on its notification, and that notification taken away. */
 class MeterReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             FIRE -> MeterAlarms.fire(context)
             STOP -> Ringing.stop(context)
             Ringing.SILENCE -> Ringing.silence(context)
+            REPOST -> Ringing.repost(context)
         }
     }
 
     companion object {
         const val FIRE = "com.wanderwildwood.okiba.METER"
         const val STOP = "com.wanderwildwood.okiba.METER_STOP"
+        const val REPOST = "com.wanderwildwood.okiba.METER_REPOST"
     }
 }
 

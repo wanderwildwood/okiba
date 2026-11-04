@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,7 +31,6 @@ import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.okiba.MainActivity
 import com.wanderwildwood.okiba.R
-import com.wanderwildwood.okiba.core.MeterRing
 import com.wanderwildwood.okiba.data.Store
 import com.wanderwildwood.okiba.ui.monochrome
 import java.lang.ref.WeakReference
@@ -35,44 +38,44 @@ import java.lang.ref.WeakReference
 /**
  * The ringing screen, over the lock screen: what rang, the time the meter ends, the note of the
  * spot, and Stop. Coming up is what turns the screen on, which on a Kompakt is what makes a
- * ring seen as well as heard.
+ * ring seen as well as heard. The sound is [RingService]'s, so this screen being closed, or
+ * drawn again by Android, never ends a ring; only Stop does.
  */
 class RingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setShowWhenLocked(true)
         setTurnScreenOn(true)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         live = WeakReference(this)
         val store = Store(this)
-        val m = store.meter()
-        if (m == null) {
+        if (store.meter() == null) {
             finish()
             return
         }
-        val ring = if (m.isOver(System.currentTimeMillis())) MeterRing.End else MeterRing.Warn
-        val title = Ringing.title(this, m, ring)
-        val text = Ringing.text(this, m, ring)
-        val note = store.load().shown?.note.orEmpty()
         setContent {
+            // Read again on each ring, so a screen left up for the warning says so when the end
+            // rings. The activity is never recreated for it (0.2.9 did, and on the Kompakt the
+            // ringing screen closed within a second).
+            val changed by Ringing.changed.collectAsState()
+            val m = remember(changed) { store.meter() }
+            val note = remember(changed) { store.load().shown?.note.orEmpty() }
             ThemeMMD(colorScheme = monochrome) {
                 Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
-                    Ring(title, text, note, onStop = {
-                        Ringing.stop(this)
-                        finish()
-                    }, onOpen = {
-                        Ringing.stop(this)
-                        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                        finish()
-                    })
+                    if (m != null) {
+                        val ring = Ringing.what(m)
+                        Ring(Ringing.title(this, m, ring), Ringing.text(this, m, ring), note, onStop = {
+                            Ringing.stop(this)
+                            finish()
+                        }, onOpen = {
+                            Ringing.stop(this)
+                            startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            finish()
+                        })
+                    }
                 }
             }
         }
-    }
-
-    /** Already up for the warning when the end rings: drawn again, so it says what rang now. */
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        recreate()
     }
 
     override fun onDestroy() {
@@ -87,8 +90,8 @@ class RingActivity : ComponentActivity() {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
 
         /**
-         * Brings the screen up straight away. With the phone locked or asleep the notification's
-         * full-screen intent does it anyway; this is for a phone in use.
+         * Brings the screen up straight away, for a phone in use with this app in front, where
+         * Android shows the full-screen intent only as a notification at the top.
          */
         fun show(context: Context) {
             try {

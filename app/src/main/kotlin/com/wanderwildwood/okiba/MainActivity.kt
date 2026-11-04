@@ -28,6 +28,7 @@ import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.okiba.ui.MainScreen
 import com.wanderwildwood.okiba.ui.RationaleDialog
 import com.wanderwildwood.okiba.ui.monochrome
+import com.wanderwildwood.okiba.meter.Ringing
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Ringing.appInFront = true
+    }
+
+    override fun onPause() {
+        Ringing.appInFront = false
+        super.onPause()
     }
 }
 
