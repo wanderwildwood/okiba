@@ -141,21 +141,21 @@
     <string name="settings_units">Distances</string>
     <!-- %1$s is Metres or Feet: what the phone's country uses -->
     <string name="units_auto">As this phone\'s country: %1$s</string>
-    <string name="units_metres">Metres</string>
+    <string name="units_metres">Meters</string>
     <string name="units_feet">Feet and miles</string>
     <string name="settings_warn">Warn before the meter ends</string>
     <string name="warn_off">No warning</string>
     <!-- %1$d is minutes -->
     <string name="warn_before">%1$d min before</string>
-    <string name="licences_title">Licences</string>
+    <string name="licences_title">Licenses</string>
     <string name="licences_source_head">Source code</string>
-    <string name="licences_no_text">%s needs no licence text here.</string>
-    <string name="licences_licence">Parked is free software: GPL-3.0-only, copyright wander wildwood. What it is built on keeps its own licences, each on its own page.</string>
+    <string name="licences_no_text">%s needs no license text here.</string>
+    <string name="licences_licence">Parked is free software: GPL-3.0-only, copyright wander wildwood. What it is built on keeps its own licenses, each on its own page.</string>
     <string name="licences_back">Back</string>
     <string name="about_no_browser_address">No browser is installed. The address is %1$s.</string>
     <string name="open_app_settings">Open app settings</string>
     <string name="licences_full_head">Full texts</string>
     <string name="licences_full_gpl">GNU General Public License v3 (full text)</string>
     <string name="licences_full_apache">Apache License 2.0 (full text)</string>
-    <string name="licences_full_ofl">SIL Open Font Licence 1.1 (full text)</string>
+    <string name="licences_full_ofl">SIL Open Font License 1.1 (full text)</string>
 </resources>
