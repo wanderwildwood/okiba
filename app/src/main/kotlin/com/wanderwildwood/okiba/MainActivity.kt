@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalCursorBlinkEnabled
 import androidx.lifecycle.repeatOnLifecycle
 import com.wanderwildwood.okiba.core.Age
 import com.wanderwildwood.okiba.ui.SettingsScreen
+import com.wanderwildwood.okiba.ui.houseTypography
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
             // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
             // for as long as the note field has focus.
             CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
-                ThemeMMD(colorScheme = monochrome) {
+                ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
                     ArmedScope { Parked() }
                 }
             }

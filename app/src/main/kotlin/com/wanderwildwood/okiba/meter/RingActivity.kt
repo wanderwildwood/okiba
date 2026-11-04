@@ -29,6 +29,7 @@ import com.wanderwildwood.okiba.MainActivity
 import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.core.MeterRing
 import com.wanderwildwood.okiba.data.Store
+import com.wanderwildwood.okiba.ui.houseTypography
 import com.wanderwildwood.okiba.ui.monochrome
 import java.lang.ref.WeakReference
 import com.wanderwildwood.okiba.ui.ArmedScope
@@ -55,7 +56,7 @@ class RingActivity : ComponentActivity() {
         val text = Ringing.text(this, m, ring)
         val note = store.load().shown?.note.orEmpty()
         setContent {
-            ThemeMMD(colorScheme = monochrome) {
+            ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
                 ArmedScope {
                     Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
                         Ring(title, text, note, onStop = {
