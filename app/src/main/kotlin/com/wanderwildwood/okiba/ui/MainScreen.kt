@@ -99,6 +99,7 @@ fun MainScreen(
             state = list,
             modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 20.dp, end = 12.dp),
+            showCutRow = true,
         ) {
             item(key = "mark") {
                 val working = state.working
