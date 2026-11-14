@@ -36,6 +36,8 @@
         android:required="false" />
 
     <queries>
+        <!-- Home, whose dark mode switch this app follows when Home is installed. -->
+        <package android:name="com.wanderwildwood.iori" />
         <!-- DuraSpeed, the Kompakt's background manager: only to say whether it is there. -->
         <package android:name="com.mediatek.duraspeed" />
         <!-- The other apps that act on selected text, so the note field's selection menu can list them. -->
@@ -59,6 +61,12 @@
         android:roundIcon="@drawable/ic_launcher_mudita"
         android:supportsRtl="false"
         android:theme="@style/Theme.App">
+        <!-- Starts dark mode before the first screen is drawn. Holds no data. -->
+        <provider
+            android:name="com.wanderwildwood.okiba.ui.DarkModeInit"
+            android:authorities="${applicationId}.darkmodeinit"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
