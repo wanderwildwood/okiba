@@ -2,6 +2,7 @@ package com.wanderwildwood.okiba.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,10 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mudita.mmd.components.switcher.SwitchMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.okiba.R
@@ -37,6 +42,7 @@ fun SettingsScreen(
     onUnits: (Units) -> Unit,
     onWarn: (Int) -> Unit,
 ) {
+    val context = LocalContext.current
     var unitsOpen by remember { mutableStateOf(false) }
     var warnOpen by remember { mutableStateOf(false) }
     var aboutOpen by remember { mutableStateOf(false) }
@@ -60,6 +66,23 @@ fun SettingsScreen(
             }
             item(key = "warn") {
                 SettingRow(stringResource(R.string.settings_warn), warnLabel(state.warnMinutes)) { warnOpen = true }
+            }
+            item(key = "dark") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 56.dp)
+                        .clickable { DarkMode.set(context, !DarkMode.on) }
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        TextMMD(text = stringResource(R.string.settings_dark), style = MaterialTheme.typography.bodyMedium)
+                        TextMMD(text = stringResource(R.string.settings_dark_note), style = MaterialTheme.typography.labelSmall)
+                    }
+                    Spacer(Modifier.width(16.dp))
+                    SwitchMMD(checked = DarkMode.on, onCheckedChange = null)
+                }
             }
         }
     }
