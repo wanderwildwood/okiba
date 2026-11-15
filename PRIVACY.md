@@ -19,7 +19,8 @@ this spot** removes one sooner.
 fresh position is not saved.
 
 **Open in maps** and **Share** hand the spot to another app only when you press them, and what
-that app does with it is that app's own business.
+that app does with it is that app's own business. The shared text holds the coordinates, a `geo:`
+link and an openstreetmap.org link; whoever opens that link shows the place to OpenStreetMap.
 
 ## The parking meter (from 0.2.0)
 
@@ -53,8 +54,9 @@ for: Android's support library adds it to every app built with it
 (`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`), so that the app's own internal messages can reach
 only the app itself.
 
-The About dialog's source address and its last line open a web address in your browser, and
-only when you press them.
+The About dialog's source address opens GitHub in your browser, and **Feed the llamas** opens a
+donation page run by Square, a payment company; each only when you press it. Nothing from the app
+goes with either, and what you do there is under their own terms.
 
 Whether distances are in meters or feet follows the country of the phone's SIM card, or of its
 language setting when there is no SIM; this is read on the phone and goes nowhere. Settings can

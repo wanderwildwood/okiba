@@ -31,11 +31,13 @@ ships with.
 - **Share** sends the spot as plain text: a line to read, a `geo:` link and a web map link.
 - **Forget this spot** asks once more, in its own face, before it does.
 - **Meter**: 30 min, 1 h, 2 h, another length, or the time on the ticket ("Ends at…"). The app
-  rings a few minutes before the meter ends (5 by default; Settings changes it or turns it off)
+  rings a few minutes before the meter ends (10 by default; Settings changes it or turns it off)
   and again when it ends, with the phone's alarm sound and a buzz, and lights the screen over the
-  lock screen. It works alone, with no other app, and sets its alarm again if the phone is
+  lock screen. A ring nobody answers stops after two minutes and leaves a "Missed meter alarm"
+  notification. It works alone, with no other app, and sets its alarm again if the phone is
   restarted. On a Kompakt it says once to switch Parked on in DuraSpeed, which would otherwise
-  shut it down and its alarm with it.
+  shut it down and its alarm with it; Settings shows that step again. The meter is a reminder:
+  check the parking rules and the real meter yourself.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.
 - Distances are in meters or feet as the phone's country uses them (from its SIM card, or its
   language setting), and Settings can fix them to either.
