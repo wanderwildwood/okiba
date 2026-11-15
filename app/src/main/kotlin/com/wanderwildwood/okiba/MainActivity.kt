@@ -29,6 +29,7 @@ import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.okiba.ui.MainScreen
 import com.wanderwildwood.okiba.ui.RationaleDialog
 import com.wanderwildwood.okiba.ui.monochrome
+import com.wanderwildwood.okiba.ui.DarkSelection
 import com.wanderwildwood.okiba.ui.ArmedScope
 import com.wanderwildwood.okiba.meter.Ringing
 
@@ -39,9 +40,9 @@ class MainActivity : ComponentActivity() {
             // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
             // for as long as the note field has focus.
             CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
-                ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
+                ThemeMMD(colorScheme = monochrome, typography = houseTypography) { DarkSelection {
                     ArmedScope { Parked() }
-                }
+                } }
             }
         }
     }

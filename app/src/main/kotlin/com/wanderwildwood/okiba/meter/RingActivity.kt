@@ -34,6 +34,7 @@ import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.data.Store
 import com.wanderwildwood.okiba.ui.houseTypography
 import com.wanderwildwood.okiba.ui.monochrome
+import com.wanderwildwood.okiba.ui.DarkSelection
 import java.lang.ref.WeakReference
 import com.wanderwildwood.okiba.ui.ArmedScope
 
@@ -62,7 +63,7 @@ class RingActivity : ComponentActivity() {
             val changed by Ringing.changed.collectAsState()
             val m = remember(changed) { store.meter() }
             val note = remember(changed) { store.load().shown?.note.orEmpty() }
-            ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
+            ThemeMMD(colorScheme = monochrome, typography = houseTypography) { DarkSelection {
                 ArmedScope {
                     Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
                         if (m != null) {
@@ -78,7 +79,7 @@ class RingActivity : ComponentActivity() {
                         }
                     }
                 }
-            }
+            } }
         }
     }
 
