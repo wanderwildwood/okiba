@@ -47,6 +47,7 @@
     <string name="meter_other_title">How long is the meter?</string>
     <string name="meter_ends_at_title">When does the meter end?</string>
     <string name="meter_start">Start</string>
+    <string name="meter_preset_armed">Start a %1$s meter — tap again</string>
     <!-- %1$s is a time of day, such as 14:30 -->
     <string name="meter_ends">Meter runs out at %1$s</string>
     <string name="meter_ends_tomorrow">Meter runs out at %1$s tomorrow</string>

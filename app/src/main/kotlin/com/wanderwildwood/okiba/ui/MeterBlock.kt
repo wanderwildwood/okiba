@@ -41,7 +41,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * The parking meter: four ways to set it when none is running; while one is, when it ends, how
+ * The parking meter: four ways to set it when none is running (a preset asks "tap again" first); while one is, when it ends, how
  * long is left and when it will warn, and a Cancel that asks in its own face. Under it, anything
  * that would stop it ringing.
  */
@@ -60,14 +60,36 @@ fun MeterBlock(meter: Meter?, now: Long, warnMinutes: Int, onStart: (MeterChoice
         )
         when {
             meter == null -> {
+                // A preset asks once, in its own face: a stray tap after a scroll only arms it, and
+                // the line under the row says what a second tap on it will start.
+                val armedPreset = rememberArmedKey<Int>()
+                val armedMinutes = armedPreset.value
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     for (m in listOf(30, 60, 120)) {
-                        OutlinedButtonMMD(onClick = { onStart(MeterChoice.Minutes(m)) }, modifier = Modifier.weight(1f).height(52.dp)) {
-                            TextMMD(text = lengthText(m), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                        OutlinedButtonMMD(
+                            onClick = { armedPreset.press(m) { onStart(MeterChoice.Minutes(m)) } },
+                            modifier = Modifier.weight(1f).height(52.dp),
+                        ) {
+                            TextMMD(
+                                text = lengthText(m),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (armedMinutes == m) FontWeight.Bold else FontWeight.Normal,
+                                maxLines = 1,
+                            )
                         }
                     }
                 }
-                Spacer(Modifier.height(10.dp))
+                if (armedMinutes != null) {
+                    TextMMD(
+                        text = stringResource(R.string.meter_preset_armed, lengthText(armedMinutes)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                            .clickable(role = Role.Button) { armedPreset.press(armedMinutes) { onStart(MeterChoice.Minutes(armedMinutes)) } }
+                            .padding(vertical = 14.dp),
+                    )
+                }
+                if (armedMinutes == null) Spacer(Modifier.height(10.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     OutlinedButtonMMD(onClick = { lengthOpen = true }, modifier = Modifier.weight(1f).height(52.dp)) {
                         TextMMD(text = stringResource(R.string.meter_other), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
