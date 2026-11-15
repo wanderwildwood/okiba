@@ -48,6 +48,23 @@ class MeterTest {
         assertEquals(24 * 60 * min, same - now)
     }
 
+    @Test fun aTicketTimeAlreadyPassedIsSaidToBeTomorrow() {
+        val now = at(ny, 2026, 10, 27, 18, 30)
+        // 17:30 has passed: the meter ends tomorrow, 23 hours on.
+        val passed = MeterMath.endFor(MeterChoice.EndsAt(17, 30), now, ny)
+        assertEquals(23 * 60 * min, passed - now)
+        assertTrue(MeterMath.isLaterDay(passed, now, ny))
+        // 19:00 is still to come today.
+        assertFalse(MeterMath.isLaterDay(MeterMath.endFor(MeterChoice.EndsAt(19, 0), now, ny), now, ny))
+        // A length that runs past midnight ends tomorrow too; one that does not, does not.
+        assertTrue(MeterMath.isLaterDay(MeterMath.endFor(MeterChoice.Minutes(6 * 60), now, ny), now, ny))
+        assertFalse(MeterMath.isLaterDay(MeterMath.endFor(MeterChoice.Minutes(60), now, ny), now, ny))
+        // The day is the phone's own: 23:30 in New York is already tomorrow by UTC.
+        val late = at(ny, 2026, 10, 27, 23, 0)
+        assertFalse(MeterMath.isLaterDay(late + 30 * min, late, ny))
+        assertTrue(MeterMath.isLaterDay(late + 30 * min, late - 4 * 60 * min, utc))
+    }
+
     @Test fun anHourAcrossTheSpringChangeIsSixtyMinutes() {
         // 2026-03-08: New York's clocks go from 02:00 to 03:00.
         val now = at(ny, 2026, 3, 8, 1, 30)

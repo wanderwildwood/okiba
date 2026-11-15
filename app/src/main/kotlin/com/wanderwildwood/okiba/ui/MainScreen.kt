@@ -23,12 +23,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -320,20 +326,31 @@ private fun FarBlock(working: Boolean, far: Far?, imperial: Boolean, onHowFar: (
 
 @Composable
 private fun NoteDialog(current: String, onSave: (String) -> Unit, onDismiss: () -> Unit) {
-    var text by remember { mutableStateOf(current) }
+    // The field is what the dialog is for: it takes the focus as it opens, the cursor after
+    // what is already written, and the keyboard comes up with it.
+    var text by remember { mutableStateOf(TextFieldValue(current, TextRange(current.length))) }
+    val focus = remember { FocusRequester() }
+    val keyboard = LocalSoftwareKeyboardController.current
     EInkDialog(onDismiss = onDismiss) {
+        // Asked from inside the dialog, a frame after it is drawn: the field lives in the
+        // dialog's own window, which a request made from the screen beneath does not reach.
+        LaunchedEffect(Unit) {
+            withFrameNanos { }
+            runCatching { focus.requestFocus() }
+            keyboard?.show()
+        }
         TextMMD(text = stringResource(R.string.note_title), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(10.dp))
         TextFieldMMD(
             value = text,
-            onValueChange = { text = it.take(NOTE_MAX) },
+            onValueChange = { text = if (it.text.length <= NOTE_MAX) it else it.copy(text = it.text.take(NOTE_MAX), selection = TextRange(NOTE_MAX)) },
             singleLine = true,
             placeholder = { TextMMD(text = stringResource(R.string.note_hint), style = MaterialTheme.typography.labelSmall) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-            modifier = Modifier.fillMaxWidth().textActions(),
+            modifier = Modifier.fillMaxWidth().focusRequester(focus).textActions(),
         )
         Spacer(Modifier.height(14.dp))
-        DialogButton(stringResource(R.string.note_save), filled = true) { onSave(text) }
+        DialogButton(stringResource(R.string.note_save), filled = true) { onSave(text.text) }
         DialogButton(stringResource(R.string.cancel)) { onDismiss() }
     }
 }

@@ -49,6 +49,9 @@
     <string name="meter_start">Start</string>
     <!-- %1$s is a time of day, such as 14:30 -->
     <string name="meter_ends">Meter runs out at %1$s</string>
+    <string name="meter_ends_tomorrow">Meter runs out at %1$s tomorrow</string>
+    <!-- Under a ticket time that has already passed today -->
+    <string name="meter_tomorrow">Tomorrow</string>
     <string name="meter_ended">Meter ran out at %1$s</string>
     <string name="meter_warn_at">Warns at %1$s</string>
     <string name="meter_cancel">Cancel the meter</string>
@@ -75,6 +78,9 @@
     <!-- %1$s is a time of day -->
     <string name="ring_warn_text">The meter runs out at %1$s</string>
     <string name="ring_end_text">The meter ran out at %1$s</string>
+    <!-- The notification left when nobody answered the ring, or it was due while the phone was off -->
+    <string name="ring_missed_end_title">Missed meter alarm</string>
+    <string name="ring_missed_warn_title">Missed meter warning</string>
     <string name="ring_stop">Stop</string>
     <string name="ring_open">Open Parked</string>
 
@@ -127,10 +133,12 @@
     <string name="about_privacy_title">Privacy</string>
     <string name="about_privacy">Everything you put in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you.</string>
     <string name="about_privacy_more">Location is read from the phone\'s GPS only after you press Mark this spot or How far?, for up to 45 seconds, and never in the background.</string>
-    <string name="about_privacy_spots">Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them.</string>
+    <string name="about_privacy_spots">Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them. The shared text holds the coordinates and an openstreetmap.org link; whoever opens that link shows the place to OpenStreetMap.</string>
     <string name="about_privacy_meter">The meter uses the phone\'s alarms and notifications to ring, and starts again after a restart only to set a running meter\'s alarm again; it reads no location. There are no ads, no analytics and no tracking.</string>
+    <string name="about_privacy_links">Feed the llamas opens a donation page run by Square, a payment company, in your browser, and the source link opens GitHub. Nothing from this app goes with either; what you do there is under their own terms.</string>
     <string name="about_terms_title">Terms</string>
     <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
+    <string name="about_terms_meter">The meter is a reminder. It can fail to ring: the phone off or out of battery, the alarm volume turned down, or the app shut down by the phone. Check the parking rules and the real meter yourself; the app is not responsible for parking fees or fines.</string>
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
     <!-- The donation link label, beside a drawing of a llama. A fixed phrase: a verb and an object -->
@@ -176,6 +184,8 @@
     <string name="privacy_rights_title">Your rights</string>
     <string name="privacy_rights">Under the GDPR you can ask to see the data held about you, to have it corrected or deleted, to limit or object to its use, to take a copy with you, to withdraw consent, and to complain to a data protection authority. Since the app keeps what it stores only on your phone, you can do most of this yourself: remove a spot with Forget this spot, cancel a running meter, clear the app\'s data in Android\'s settings, or uninstall the app.</string>
     <!-- /shared-about -->
+    <string name="settings_duraspeed">DuraSpeed</string>
+    <string name="settings_duraspeed_value">The step that lets the meter ring</string>
     <string name="settings_dark">Dark mode</string>
     <string name="settings_dark_note">White on black, in this app. Home has one switch for every app.</string>
 </resources>

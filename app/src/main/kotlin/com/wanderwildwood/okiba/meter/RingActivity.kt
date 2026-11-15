@@ -119,7 +119,7 @@ private fun Ring(title: String, text: String, note: String, onStop: () -> Unit, 
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        TextMMD(text = title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        TextMMD(text = title, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(12.dp))
         TextMMD(text = text, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         if (note.isNotBlank()) {

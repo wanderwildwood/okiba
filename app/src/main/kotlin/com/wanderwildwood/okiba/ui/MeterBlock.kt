@@ -21,9 +21,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.wanderwildwood.okiba.R
@@ -92,7 +92,10 @@ fun MeterBlock(meter: Meter?, now: Long, warnMinutes: Int, onStart: (MeterChoice
             }
             else -> {
                 TextMMD(
-                    text = stringResource(R.string.meter_ends, Ringing.clock(context, meter.endAt)),
+                    text = stringResource(
+                        if (MeterMath.isLaterDay(meter.endAt, now, ZoneId.systemDefault())) R.string.meter_ends_tomorrow else R.string.meter_ends,
+                        Ringing.clock(context, meter.endAt),
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                 )
@@ -139,14 +142,18 @@ private fun ProblemRow(p: Problem, onOpen: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(top = 14.dp)) {
         TextMMD(text = stringResource(p.text), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(10.dp))
-        ButtonMMD(onClick = onOpen, modifier = Modifier.fillMaxWidth().height(48.dp)) {
+        // Outlined: the one filled button on this screen is Mark this spot.
+        OutlinedButtonMMD(onClick = onOpen, modifier = Modifier.fillMaxWidth().height(48.dp)) {
             TextMMD(text = stringResource(p.button), style = MaterialTheme.typography.bodyMedium)
         }
         if (p.done != null && p.onDone != null) {
-            Spacer(Modifier.height(8.dp))
-            OutlinedButtonMMD(onClick = p.onDone, modifier = Modifier.fillMaxWidth().height(48.dp)) {
-                TextMMD(text = stringResource(p.done), style = MaterialTheme.typography.bodyMedium)
-            }
+            // The person's word that it is done: a line of text, not a third button.
+            TextMMD(
+                text = stringResource(p.done),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(role = Role.Button, onClick = p.onDone).padding(vertical = 14.dp),
+            )
         }
     }
 }
@@ -158,7 +165,7 @@ private fun LengthDialog(onSet: (Int) -> Unit, onDismiss: () -> Unit) {
     EInkDialog(onDismiss = onDismiss) {
         TextMMD(text = stringResource(R.string.meter_other_title), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
-        TextMMD(text = lengthText(minutes), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        TextMMD(text = lengthText(minutes), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
         Steps(
             listOf("−10" to -10, "−1" to -1, "+1" to 1, "+10" to 10),
@@ -186,7 +193,14 @@ private fun EndsAtDialog(now: Long, onSet: (Int, Int) -> Unit, onDismiss: () -> 
         val m = at % 60
         val shown = DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm a", Locale.getDefault())
             .format(LocalTime.of(h, m))
-        TextMMD(text = shown, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        TextMMD(text = shown, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+        // A time already past today is tomorrow's; the line is always there, so the dialog keeps its height.
+        val tomorrow = MeterMath.isLaterDay(
+            MeterMath.endFor(MeterChoice.EndsAt(h, m), System.currentTimeMillis(), ZoneId.systemDefault()),
+            System.currentTimeMillis(),
+            ZoneId.systemDefault(),
+        )
+        TextMMD(text = if (tomorrow) stringResource(R.string.meter_tomorrow) else " ", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(12.dp))
         Steps(listOf("−1 h" to -60, "−5" to -5, "+5" to 5, "+1 h" to 60)) {
             at = Math.floorMod(at + it, 24 * 60)

@@ -71,6 +71,13 @@ object MeterMath {
     }
 
     /**
+     * Whether [end] falls on a later day than [now] by the clock in [zone]: a ticket time that
+     * has already passed today is tomorrow's, and the screen says so.
+     */
+    fun isLaterDay(end: Long, now: Long, zone: ZoneId): Boolean =
+        Instant.ofEpochMilli(end).atZone(zone).toLocalDate().isAfter(Instant.ofEpochMilli(now).atZone(zone).toLocalDate())
+
+    /**
      * When to warn, [warnMinutes] before [end]; null with the warning off, or when that moment is
      * already past at [now] (a ten-minute meter with a fifteen-minute warning rings only at its end).
      */

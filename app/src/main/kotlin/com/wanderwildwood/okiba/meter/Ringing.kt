@@ -31,7 +31,8 @@ import java.util.Locale
  * (so a phone set to silent still rings) and buzzes, and holds up a notification whose full-screen
  * intent brings the ringing screen over the lock screen, which is what lights a Kompakt's panel.
  * Both the warning and the end ring until Stop is pressed, or for [RING_MS], after which the
- * notification stays, quietly. Clock's ring, cut down to one meter.
+ * ringing screen closes and an ordinary notification stays that says the alarm was missed, on
+ * the lock screen too, as the phone's clock leaves one. Clock's ring, cut down to one meter.
  *
  * Only Stop ends a ring. The ringing notification cannot be swiped or tapped away, and the
  * ringing screen being closed, or drawn again by the system, leaves the sound going.
@@ -143,7 +144,11 @@ object Ringing {
         _changed.value++
     }
 
-    /** Nobody answered: the sound ends, and the notification stays, quietly. */
+    /**
+     * Nobody answered: the sound ends, the ringing screen closes (left up it kept the screen lit,
+     * and hid the lock screen where the notification is looked for), and a notification that says
+     * the alarm was missed stays until it is swiped away or opened.
+     */
     fun silence(context: Context) {
         val m = Store(context).meter() ?: return stop(context)
         val n = quiet(context, m, what(m))
@@ -152,6 +157,8 @@ object Ringing {
         } else if (context.getSystemService(NotificationManager::class.java).activeNotifications.any { it.id == ID }) {
             post(context, n)
         }
+        RingActivity.closeAll()
+        _changed.value++
     }
 
     /**
@@ -208,7 +215,7 @@ object Ringing {
     private fun quiet(context: Context, m: Meter, ring: MeterRing): Notification =
         NotificationCompat.Builder(context, QUIET)
             .setSmallIcon(R.drawable.ic_notify)
-            .setContentTitle(title(context, m, ring))
+            .setContentTitle(context.getString(if (ring == MeterRing.End) R.string.ring_missed_end_title else R.string.ring_missed_warn_title))
             .setContentText(text(context, m, ring))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

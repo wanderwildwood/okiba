@@ -43,12 +43,15 @@ class RingService : Service() {
             return START_NOT_STICKY
         }
         if (intent?.action == QUIETEN) {
-            // Nobody answered: the sound ends, the notification is left up, quietly.
+            // Nobody answered: the sound ends, and the missed-alarm notice takes the ringing
+            // notification's place. The service's own notification is taken down first and the
+            // notice posted after it as a plain one, so it belongs to no service and nothing
+            // that stops the service can take it with it.
             stopSound()
             @Suppress("DEPRECATION")
             val quiet = intent.getParcelableExtra<Notification>(EXTRA_NOTICE)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             if (quiet != null) getSystemService(NotificationManager::class.java).notify(Ringing.ID, quiet)
-            stopForeground(STOP_FOREGROUND_DETACH)
             detached = true
             stopSelf()
             return START_NOT_STICKY

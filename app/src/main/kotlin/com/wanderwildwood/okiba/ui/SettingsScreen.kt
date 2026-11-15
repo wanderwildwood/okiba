@@ -1,5 +1,6 @@
 package com.wanderwildwood.okiba.ui
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import com.wanderwildwood.okiba.R
 import com.wanderwildwood.okiba.UiState
 import com.wanderwildwood.okiba.core.Units
 import com.wanderwildwood.okiba.data.Settings
+import com.wanderwildwood.okiba.meter.DuraSpeed
 
 /** The few settings, one row each, showing what they are set to. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +48,9 @@ fun SettingsScreen(
     var unitsOpen by remember { mutableStateOf(false) }
     var warnOpen by remember { mutableStateOf(false) }
     var aboutOpen by remember { mutableStateOf(false) }
+    var duraSpeedOpen by remember { mutableStateOf(false) }
+    // Only a phone that has DuraSpeed has the row.
+    val hasDuraSpeed = remember { DuraSpeed.isKompakt(context) }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -66,6 +71,13 @@ fun SettingsScreen(
             }
             item(key = "warn") {
                 SettingRow(stringResource(R.string.settings_warn), warnLabel(state.warnMinutes)) { warnOpen = true }
+            }
+            if (hasDuraSpeed) {
+                // The first screen's DuraSpeed step goes once it is said to be done; this brings
+                // its instructions back, for a press made by mistake or a setting since changed.
+                item(key = "duraspeed") {
+                    SettingRow(stringResource(R.string.settings_duraspeed), stringResource(R.string.settings_duraspeed_value)) { duraSpeedOpen = true }
+                }
             }
             item(key = "dark") {
                 Row(
@@ -88,6 +100,7 @@ fun SettingsScreen(
     }
 
     if (aboutOpen) AboutDialog { aboutOpen = false }
+    if (duraSpeedOpen) DuraSpeedDialog { duraSpeedOpen = false }
     if (unitsOpen) {
         ChoiceDialog(
             title = stringResource(R.string.settings_units),
@@ -120,6 +133,27 @@ private fun unitsLabel(u: Units, regionImperial: Boolean): String = when (u) {
     )
     Units.Metric -> stringResource(R.string.units_metres)
     Units.Imperial -> stringResource(R.string.units_feet)
+}
+
+/** The DuraSpeed step again: what to do, and the button that opens DuraSpeed. */
+@Composable
+private fun DuraSpeedDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    var failed by remember { mutableStateOf(false) }
+    EInkDialog(onDismiss = onDismiss) {
+        TextMMD(text = stringResource(R.string.settings_duraspeed), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(10.dp))
+        TextMMD(text = stringResource(R.string.setup_duraspeed), style = MaterialTheme.typography.bodyMedium)
+        if (failed) {
+            Spacer(Modifier.height(10.dp))
+            TextMMD(text = stringResource(R.string.setup_cannot_open), style = MaterialTheme.typography.bodyMedium)
+        }
+        Spacer(Modifier.height(14.dp))
+        DialogButton(stringResource(R.string.setup_duraspeed_open), filled = true) {
+            failed = runCatching { context.startActivity(DuraSpeed.appInfo().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isFailure
+        }
+        DialogButton(stringResource(R.string.about_close)) { onDismiss() }
+    }
 }
 
 /** A setting: its name, and under it what it is set to. The whole row takes the press. */
