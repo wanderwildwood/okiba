@@ -17,6 +17,7 @@ import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
 import com.wanderwildwood.okiba.data.Store
 
 /**
@@ -85,6 +86,7 @@ class RingService : Service() {
         val p = player
         if (p == null) {
             Log.e("okiba", "no alarm sound could be played")
+            soundFailed.value = true
         } else {
             if (inCall) p.setVolume(0.1f, 0.1f)
             p.start()
@@ -110,6 +112,15 @@ class RingService : Service() {
             setDataSource(this@RingService, uri)
             isLooping = true
             setWakeMode(this@RingService, PowerManager.PARTIAL_WAKE_LOCK)
+            // The sound stopping partway with an error: the buzz goes on, and the ringing screen
+            // says the sound could not be played.
+            setOnErrorListener { mp, _, _ ->
+                Log.e("okiba", "the alarm sound stopped with an error")
+                if (player === mp) player = null
+                runCatching { mp.release() }
+                soundFailed.value = true
+                true
+            }
             prepare()
         }
     } catch (e: Exception) {
@@ -124,6 +135,7 @@ class RingService : Service() {
         vibrator = null
         focus?.let { getSystemService(AudioManager::class.java).abandonAudioFocusRequest(it) }
         focus = null
+        soundFailed.value = false
     }
 
     override fun onDestroy() {
@@ -142,6 +154,9 @@ class RingService : Service() {
         @Volatile
         var running = false
             private set
+
+        /** True while the ring goes on with no sound, because none could be played: the ringing screen says so. */
+        val soundFailed = MutableStateFlow(false)
 
         /** Starts the ring, or says it could not be started from where this was called. */
         fun start(context: Context): Boolean = try {

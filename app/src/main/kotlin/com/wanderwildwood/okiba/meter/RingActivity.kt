@@ -126,6 +126,11 @@ private fun Ring(title: String, text: String, note: String, onStop: () -> Unit, 
             Spacer(Modifier.height(12.dp))
             TextMMD(text = note, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
         }
+        val soundFailed by RingService.soundFailed.collectAsState()
+        if (soundFailed) {
+            Spacer(Modifier.height(12.dp))
+            TextMMD(text = stringResource(R.string.ring_sound_failed), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+        }
         Spacer(Modifier.weight(1f))
         ButtonMMD(onClick = onStop, modifier = Modifier.fillMaxWidth().height(72.dp)) {
             TextMMD(text = stringResource(R.string.ring_stop), style = MaterialTheme.typography.titleLarge)

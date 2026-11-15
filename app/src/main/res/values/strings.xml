@@ -82,6 +82,7 @@
     <string name="ring_missed_end_title">Missed meter alarm</string>
     <string name="ring_missed_warn_title">Missed meter warning</string>
     <string name="ring_stop">Stop</string>
+    <string name="ring_sound_failed">The alarm sound could not be played. It buzzes instead.</string>
     <string name="ring_open">Open Parked</string>
 
     <!-- What would stop the meter ringing, each with its mend -->
