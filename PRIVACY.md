@@ -27,7 +27,7 @@ The meter is a timer inside the app. It uses no location and nothing goes online
 time, and to ring at all, it needs these permissions, none of which you are asked for on the
 Kompakt:
 
-- **Alarms** (`USE_EXACT_ALARM`, and `SCHEDULE_EXACT_ALARM` on Android 12 and older): to ring at
+- **Alarms** (`SCHEDULE_EXACT_ALARM`): to ring at
   the minute the meter ends, and at the warning before it.
 - **Notifications** (`POST_NOTIFICATIONS`): the ring shows as a notification, with the phone's alarm
   sound and a buzz (`VIBRATE`).

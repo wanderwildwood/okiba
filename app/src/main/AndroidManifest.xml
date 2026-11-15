@@ -13,13 +13,13 @@
 
     <!--
       The parking meter, from 0.2.0. Still no INTERNET permission.
-      Exact alarms, so the meter rings at its minute: USE_EXACT_ALARM from Android 13, and
-      SCHEDULE_EXACT_ALARM before it (given at install on Android 12, the Kompakt's).
+      Exact alarms, so the meter rings at its minute: SCHEDULE_EXACT_ALARM, on every Android
+      version. It is given at install to an app built for Android 12, as this one is.
+      USE_EXACT_ALARM counts only for apps built for Android 13 and later, so with
+      SCHEDULE_EXACT_ALARM held back to Android 12 the meter had neither on a newer system
+      and could ring minutes late.
     -->
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- An alarm does not survive a restart: this is how a running meter's is set again. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- The ring is a notification; Android 13 and later ask for it. -->
