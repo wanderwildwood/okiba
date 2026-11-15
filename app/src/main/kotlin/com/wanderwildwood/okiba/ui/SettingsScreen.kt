@@ -22,6 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +38,8 @@ import com.wanderwildwood.okiba.UiState
 import com.wanderwildwood.okiba.core.Units
 import com.wanderwildwood.okiba.data.Settings
 import com.wanderwildwood.okiba.meter.DuraSpeed
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.semantics.toggleableState
 
 /** The few settings, one row each, showing what they are set to. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +90,7 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 56.dp)
+                        .semantics { role = Role.Switch; toggleableState = ToggleableState(DarkMode.on) }
                         .clickable { DarkMode.set(context, !DarkMode.on) }
                         .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -185,6 +192,11 @@ fun <T> ChoiceDialog(title: String, choices: List<Pair<T, String>>, chosen: T, o
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 48.dp)
+                    // The bold says which one is chosen; a screen reader hears it as selected.
+                    .semantics {
+                        role = Role.RadioButton
+                        selected = value == chosen
+                    }
                     .clickable { onChoose(value) }
                     .padding(vertical = 13.dp),
             )
