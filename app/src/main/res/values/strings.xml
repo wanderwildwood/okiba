@@ -137,7 +137,7 @@
     <string name="about_privacy_meter">The meter uses the phone\'s alarms and notifications to ring, and starts again after a restart only to set a running meter\'s alarm again; it reads no location. There are no ads, no analytics and no tracking.</string>
     <string name="about_privacy_links">Feed the llamas opens a donation page run by Square, a payment company, in your browser, and the source link opens GitHub. Nothing from this app goes with either; what you do there is under their own terms.</string>
     <string name="about_terms_title">Terms</string>
-    <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
+    <string name="about_terms">This app is free software under the GNU General Public License, version 3 only. It comes with no warranty: use it at your own risk.</string>
     <string name="about_terms_meter">The meter is a reminder. It can fail to ring: the phone off or out of battery, the alarm volume turned down, or the app shut down by the phone. Check the parking rules and the real meter yourself; the app is not responsible for parking fees or fines.</string>
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
