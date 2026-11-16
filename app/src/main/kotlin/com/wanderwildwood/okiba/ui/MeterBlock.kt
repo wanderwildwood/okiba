@@ -79,6 +79,17 @@ fun MeterBlock(meter: Meter?, now: Long, warnMinutes: Int, onStart: (MeterChoice
                         }
                     }
                 }
+                Spacer(Modifier.height(10.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedButtonMMD(onClick = { lengthOpen = true }, modifier = Modifier.weight(1f).height(52.dp)) {
+                        TextMMD(text = stringResource(R.string.meter_other), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                    }
+                    OutlinedButtonMMD(onClick = { endsAtOpen = true }, modifier = Modifier.weight(1f).height(52.dp)) {
+                        TextMMD(text = stringResource(R.string.meter_ends_at_choice), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                    }
+                }
+                // The question goes under both rows, not between them: there it pushed "Other length"
+                // and "Ends at" down, and a tap aimed at them landed on it and started a meter.
                 if (armedMinutes != null) {
                     TextMMD(
                         text = stringResource(R.string.meter_preset_armed, lengthText(armedMinutes)),
@@ -88,15 +99,6 @@ fun MeterBlock(meter: Meter?, now: Long, warnMinutes: Int, onStart: (MeterChoice
                             .clickable(role = Role.Button) { armedPreset.press(armedMinutes) { onStart(MeterChoice.Minutes(armedMinutes)) } }
                             .padding(vertical = 14.dp),
                     )
-                }
-                if (armedMinutes == null) Spacer(Modifier.height(10.dp))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    OutlinedButtonMMD(onClick = { lengthOpen = true }, modifier = Modifier.weight(1f).height(52.dp)) {
-                        TextMMD(text = stringResource(R.string.meter_other), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
-                    }
-                    OutlinedButtonMMD(onClick = { endsAtOpen = true }, modifier = Modifier.weight(1f).height(52.dp)) {
-                        TextMMD(text = stringResource(R.string.meter_ends_at_choice), style = MaterialTheme.typography.bodyMedium, maxLines = 1)
-                    }
                 }
             }
             meter.isOver(now) -> {
