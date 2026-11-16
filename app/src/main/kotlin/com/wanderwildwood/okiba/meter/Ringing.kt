@@ -223,7 +223,8 @@ object Ringing {
             .setShowWhen(false)
             .setContentIntent(open(context))
             .setDeleteIntent(action(context, MeterReceiver.STOP))
-            .addAction(0, context.getString(R.string.ring_stop), action(context, MeterReceiver.STOP))
+            // Nothing is ringing any more: the one button puts the notice away.
+            .addAction(0, context.getString(R.string.ring_dismiss), action(context, MeterReceiver.STOP))
             .build()
 
     private fun post(context: Context, n: Notification) {
