@@ -46,6 +46,9 @@ object Ringing {
     const val ID = 1
     const val RING_MS = 2 * 60_000L
 
+    /** When the ring now going began, in this process; 0 when none has here. */
+    @Volatile private var ringingSince = 0L
+
     /** Whether the app's own screen is in front, where only a direct start brings the ringing screen up. */
     @Volatile
     var appInFront = false
@@ -125,7 +128,8 @@ object Ringing {
         // The ring goes on; this quietens it if nobody answers.
         // Exact: an ordinary alarm was seen to come over a minute late.
         val am = context.getSystemService(AlarmManager::class.java)
-        val at = System.currentTimeMillis() + RING_MS
+        ringingSince = System.currentTimeMillis()
+        val at = ringingSince + RING_MS
         if (am.canScheduleExactAlarms()) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, action(context, SILENCE))
         else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, action(context, SILENCE))
     }
@@ -150,6 +154,9 @@ object Ringing {
      * the alarm was missed stays until it is swiped away or opened.
      */
     fun silence(context: Context) {
+        // A warning's quietening that arrives as the end starts to ring (a two-minute warning
+        // falls due with it) belongs to the warning: the end rings its own full time.
+        if (System.currentTimeMillis() - ringingSince < RING_MS / 2) return
         val m = Store(context).meter() ?: return stop(context)
         val n = quiet(context, m, what(m))
         if (RingService.running) {
