@@ -36,6 +36,8 @@ import com.wanderwildwood.okiba.meter.Ringing
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Made before the first ring, so Android 13 and later ask about notifications at once.
+        Ringing.channels(this)
         setContent {
             // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
             // for as long as the note field has focus.
@@ -62,13 +64,15 @@ class MainActivity : ComponentActivity() {
 private fun Parked(vm: OkibaViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
     // What the button was pressed for, held while the person reads why and answers Android's ask.
-    var asking by remember { mutableStateOf<Job?>(null) }
-    var rationale by remember { mutableStateOf(false) }
+    // Saveable: Android's ask can outlive the window it was asked from.
+    var asking by rememberSaveable { mutableStateOf<Job?>(null) }
+    var rationale by rememberSaveable { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         val job = asking
         asking = null
-        if (job != null && granted[Manifest.permission.ACCESS_FINE_LOCATION] == true) vm.start(job) else vm.denied()
+        val given = granted[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        if (job != null && given) vm.start(job) else if (!given) vm.denied()
     }
 
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
