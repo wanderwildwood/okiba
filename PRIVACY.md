@@ -7,7 +7,7 @@ It asks for one permission, **location**, and uses it only when you press **Mark
 **How far?**: the phone's GPS is listened to from that press until it gives a position good to
 about 15 m, or for 20 seconds after its first position, when the best one is kept; with nothing
 after 45 seconds it gives up. Then the GPS is let go. It never reads location in the background, has no
-service, and never asks for location "all the time". If you allow only approximate location, it
+location service, and never asks for location "all the time". If you allow only approximate location, it
 says it needs precise and does nothing.
 
 It keeps, in its own private storage on the phone: the last five spots you marked (latitude,
@@ -33,7 +33,8 @@ Kompakt:
 - **Notifications** (`POST_NOTIFICATIONS`): the ring shows as a notification, with the phone's alarm
   sound and a buzz (`VIBRATE`).
 - **Showing over the lock screen** (`USE_FULL_SCREEN_INTENT`): the ringing screen comes up and
-  turns the screen on, so the ring is seen as well as heard.
+  turns the screen on, so the ring is seen as well as heard. It shows the note of the spot on
+  show, if you wrote one, so anyone holding the locked phone while it rings can read it.
 - **Ringing until you answer** (`FOREGROUND_SERVICE`, `WAKE_LOCK`): while the meter rings, and
   only then, a small service plays the alarm sound and keeps the phone awake for it, until you
   press Stop or two minutes go by.
@@ -57,6 +58,11 @@ only the app itself.
 The About dialog's source address opens GitHub in your browser, and **Feed the llamas** opens a
 donation page run by Square, a payment company; each only when you press it. Nothing from the app
 goes with either, and what you do there is under their own terms.
+
+When Home is installed, the app reads Home's dark mode switch, a yes or no, so it is light or
+dark with the rest of the phone, and sends Home nothing. A selection-menu entry hands the text
+you selected in the note to the app you choose, and only then. Before opening a link the app
+asks Android which browsers are installed, so the link opens in one.
 
 Whether distances are in meters or feet follows the country of the phone's SIM card, or of its
 language setting when there is no SIM; this is read on the phone and goes nowhere. Settings can

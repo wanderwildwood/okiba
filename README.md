@@ -49,7 +49,7 @@ rather than guessing: mark the spot at the entrance, and put the level in the no
 
 It collects nothing and sends nothing. It has **no internet permission**, so it cannot. The
 only permission it asks you for is location, and only when you press a button: up to 45 seconds
-of the GPS per press, from the GPS alone, with no background location and no service. Where you parked stays in the app's private storage on the phone, is left out of
+of the GPS per press, from the GPS alone, with no background location and no location service. Where you parked stays in the app's private storage on the phone, is left out of
 backups, and goes when the app does. The meter needs alarms, notifications, the ringing screen
 over the lock screen and a start after a restart, and uses them for nothing else. See
 [PRIVACY.md](PRIVACY.md).
