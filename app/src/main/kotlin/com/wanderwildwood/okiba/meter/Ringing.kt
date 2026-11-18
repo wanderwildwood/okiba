@@ -50,9 +50,9 @@ object Ringing {
     const val ID = 1
 
     /**
-     * The missed-alarm notice: its own id, so taking the ringing notification down (Stop, the
-     * service ending) can never take the notice with it, and putting the notice away never
-     * stops a ring.
+     * The missed-alarm notice: its own id, so the service ending never takes the notice with it,
+     * and putting the notice away (its Dismiss, a swipe) never stops a ring. Stop and a new or
+     * cancelled meter take both down.
      */
     const val MISSED_ID = 2
     const val RING_MS = 2 * 60_000L
