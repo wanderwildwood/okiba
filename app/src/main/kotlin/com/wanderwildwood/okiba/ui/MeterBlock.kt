@@ -128,6 +128,7 @@ fun MeterBlock(meter: Meter?, now: Long, warnMinutes: Int, onStart: (MeterChoice
                 if (w != null && !meter.warned) {
                     TextMMD(text = stringResource(R.string.meter_warn_at, Ringing.clock(context, w)), style = MaterialTheme.typography.bodyMedium)
                 }
+                TextMMD(text = stringResource(R.string.meter_restart_note), style = MaterialTheme.typography.labelSmall)
                 ArmedRow(
                     label = stringResource(R.string.meter_cancel),
                     armedLabel = stringResource(R.string.meter_cancel_armed),

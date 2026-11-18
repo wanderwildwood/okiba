@@ -55,6 +55,8 @@
     <string name="meter_tomorrow">Tomorrow</string>
     <string name="meter_ended">Meter ran out at %1$s</string>
     <string name="meter_warn_at">Warns at %1$s</string>
+    <!-- Under a running meter: Android lets an app ring after a restart only once the phone is unlocked -->
+    <string name="meter_restart_note">If the phone restarts, the meter rings only after the phone is unlocked again.</string>
     <string name="meter_cancel">Cancel the meter</string>
     <string name="meter_cancel_armed">Cancel the meter — tap again</string>
     <string name="meter_clear">Clear</string>
@@ -72,6 +74,7 @@
     <string name="channel_ring_about">The warning before a parking meter ends, and its end.</string>
     <string name="channel_ring_fallback">Meter alarm, if Parked cannot play it</string>
     <string name="channel_ring_fallback_about">Used only when Android does not let Parked play the meter alarm itself.</string>
+    <string name="channel_starting">Starting</string>
     <string name="channel_quiet">Meter, quietly</string>
     <!-- %1$d is minutes -->
     <string name="ring_warn_title">Meter runs out in %1$d min</string>

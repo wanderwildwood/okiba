@@ -40,6 +40,14 @@ class RingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val m = Store(this).meter()
         if (m == null) {
+            // The meter went between the start and now. Started with startForegroundService,
+            // the service must still go to the foreground before it stops, or Android ends the
+            // app: a silent placeholder, taken away at once. (A quietening is a plain start.)
+            if (intent?.action != QUIETEN) {
+                Ringing.channels(this)
+                startForeground(Ringing.ID, Ringing.placeholder(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            }
             stopSelf()
             return START_NOT_STICKY
         }
@@ -52,7 +60,7 @@ class RingService : Service() {
             @Suppress("DEPRECATION")
             val quiet = intent.getParcelableExtra<Notification>(EXTRA_NOTICE)
             stopForeground(STOP_FOREGROUND_REMOVE)
-            if (quiet != null) getSystemService(NotificationManager::class.java).notify(Ringing.ID, quiet)
+            if (quiet != null) Ringing.postMissed(this, quiet)
             detached = true
             stopSelf()
             return START_NOT_STICKY
@@ -173,7 +181,8 @@ class RingService : Service() {
                 context.startService(Intent(context, RingService::class.java).setAction(QUIETEN).putExtra(EXTRA_NOTICE, notice))
             } catch (e: Exception) {
                 stop(context)
-                context.getSystemService(NotificationManager::class.java).notify(Ringing.ID, notice)
+                context.getSystemService(NotificationManager::class.java).cancel(Ringing.ID)
+                Ringing.postMissed(context, notice)
             }
         }
 

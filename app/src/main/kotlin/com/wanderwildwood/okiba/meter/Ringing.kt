@@ -43,7 +43,17 @@ object Ringing {
     /** The service's notification: the service makes the sound, so the channel has none. */
     const val RINGING = "meter_ringing"
     private const val QUIET = "meter_quiet"
+
+    /** Silent and out of the way, for the moment the service must show something before stopping. */
+    private const val STARTING = "meter_starting"
     const val ID = 1
+
+    /**
+     * The missed-alarm notice: its own id, so taking the ringing notification down (Stop, the
+     * service ending) can never take the notice with it, and putting the notice away never
+     * stops a ring.
+     */
+    const val MISSED_ID = 2
     const val RING_MS = 2 * 60_000L
 
     /** When the ring now going began, in this process; 0 when none has here. */
@@ -94,6 +104,13 @@ object Ringing {
                 enableVibration(false)
             },
         )
+        nm.createNotificationChannel(
+            NotificationChannel(STARTING, context.getString(R.string.channel_starting), NotificationManager.IMPORTANCE_MIN).apply {
+                setSound(null, null)
+                enableVibration(false)
+                setShowBadge(false)
+            },
+        )
     }
 
     /** What a meter is ringing for: its end once that has come, its warning before. */
@@ -109,7 +126,8 @@ object Ringing {
         val due = if (ring == MeterRing.End) m.endAt else (m.warnAt ?: m.endAt)
         if (System.currentTimeMillis() - due > RING_MS) {
             RingService.stop(context)
-            post(context, quiet(context, m, ring))
+            context.getSystemService(NotificationManager::class.java).cancel(ID)
+            postMissed(context, quiet(context, m, ring))
             _changed.value++
             return
         }
@@ -144,6 +162,7 @@ object Ringing {
         context.getSystemService(AlarmManager::class.java).cancel(action(context, SILENCE))
         RingService.stop(context)
         context.getSystemService(NotificationManager::class.java).cancel(ID)
+        context.getSystemService(NotificationManager::class.java).cancel(MISSED_ID)
         RingActivity.closeAll()
         _changed.value++
     }
@@ -162,7 +181,8 @@ object Ringing {
         if (RingService.running) {
             RingService.quieten(context, n)
         } else if (context.getSystemService(NotificationManager::class.java).activeNotifications.any { it.id == ID }) {
-            post(context, n)
+            context.getSystemService(NotificationManager::class.java).cancel(ID)
+            postMissed(context, n)
         }
         RingActivity.closeAll()
         _changed.value++
@@ -229,10 +249,32 @@ object Ringing {
             .setAutoCancel(true)
             .setShowWhen(false)
             .setContentIntent(open(context))
-            .setDeleteIntent(action(context, MeterReceiver.STOP))
-            // Nothing is ringing any more: the one button puts the notice away.
-            .addAction(0, context.getString(R.string.ring_dismiss), action(context, MeterReceiver.STOP))
+            // Nothing is ringing any more: the one button puts the notice away, and only the notice.
+            .addAction(0, context.getString(R.string.ring_dismiss), action(context, MeterReceiver.DISMISS_MISSED))
             .build()
+
+    /** What the service shows for the moment before it stops, when there was no meter to ring. */
+    fun placeholder(context: Context): Notification =
+        NotificationCompat.Builder(context, STARTING)
+            .setSmallIcon(R.drawable.ic_notify)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setSilent(true)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
+            .build()
+
+    /** Puts the missed notice away; a ring that has started since goes on. */
+    fun dismissMissed(context: Context) {
+        context.getSystemService(NotificationManager::class.java).cancel(MISSED_ID)
+    }
+
+    /** Posts the missed notice under its own id. */
+    fun postMissed(context: Context, n: Notification) {
+        try {
+            context.getSystemService(NotificationManager::class.java).notify(MISSED_ID, n)
+        } catch (e: SecurityException) {
+            Log.w("okiba", "missed notice not posted: ${e.message}")
+        }
+    }
 
     private fun post(context: Context, n: Notification) {
         try {

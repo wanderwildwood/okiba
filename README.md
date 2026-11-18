@@ -35,7 +35,7 @@ ships with.
   and again when it ends, with the phone's alarm sound and a buzz, and lights the screen over the
   lock screen. A ring nobody answers stops after two minutes and leaves a "Missed meter alarm"
   notification. It works alone, with no other app, and sets its alarm again if the phone is
-  restarted. On a Kompakt it says once to switch Parked on in DuraSpeed, which would otherwise
+  restarted, though then it rings only once the phone has been unlocked. On a Kompakt it says once to switch Parked on in DuraSpeed, which would otherwise
   shut it down and its alarm with it; Settings shows that step again. The meter is a reminder:
   check the parking rules and the real meter yourself.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.

@@ -89,6 +89,7 @@ class MeterReceiver : BroadcastReceiver() {
             STOP -> Ringing.stop(context)
             Ringing.SILENCE -> Ringing.silence(context)
             REPOST -> Ringing.repost(context)
+            DISMISS_MISSED -> Ringing.dismissMissed(context)
         }
     }
 
@@ -96,6 +97,7 @@ class MeterReceiver : BroadcastReceiver() {
         const val FIRE = "com.wanderwildwood.okiba.METER"
         const val STOP = "com.wanderwildwood.okiba.METER_STOP"
         const val REPOST = "com.wanderwildwood.okiba.METER_REPOST"
+        const val DISMISS_MISSED = "com.wanderwildwood.okiba.METER_DISMISS_MISSED"
     }
 }
 
