@@ -11,6 +11,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.PowerManager
+import android.os.SystemClock
 import android.text.format.DateFormat
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -56,7 +57,10 @@ object Ringing {
     const val MISSED_ID = 2
     const val RING_MS = 2 * 60_000L
 
-    /** When the ring now going began, in this process; 0 when none has here. */
+    /**
+     * When the ring now going began, in this process, on the clock that counts since start-up (a
+     * change to the phone's clock neither stretches a ring nor cuts it short); 0 when none has here.
+     */
     @Volatile private var ringingSince = 0L
 
     /** Whether the app's own screen is in front, where only a direct start brings the ringing screen up. */
@@ -146,10 +150,10 @@ object Ringing {
         // The ring goes on; this quietens it if nobody answers.
         // Exact: an ordinary alarm was seen to come over a minute late.
         val am = context.getSystemService(AlarmManager::class.java)
-        ringingSince = System.currentTimeMillis()
+        ringingSince = SystemClock.elapsedRealtime()
         val at = ringingSince + RING_MS
-        if (am.canScheduleExactAlarms()) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, action(context, SILENCE))
-        else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, action(context, SILENCE))
+        if (am.canScheduleExactAlarms()) am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, action(context, SILENCE))
+        else am.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, action(context, SILENCE))
     }
 
     /** The screen on and unlocked: someone is using the phone. */
@@ -175,7 +179,7 @@ object Ringing {
     fun silence(context: Context) {
         // A warning's quietening that arrives as the end starts to ring (a two-minute warning
         // falls due with it) belongs to the warning: the end rings its own full time.
-        if (System.currentTimeMillis() - ringingSince < RING_MS / 2) return
+        if (SystemClock.elapsedRealtime() - ringingSince < RING_MS / 2) return
         val m = Store(context).meter() ?: return stop(context)
         val n = quiet(context, m, what(m))
         if (RingService.running) {
