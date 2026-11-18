@@ -110,6 +110,7 @@ object Ringing {
         )
         nm.createNotificationChannel(
             NotificationChannel(STARTING, context.getString(R.string.channel_starting), NotificationManager.IMPORTANCE_MIN).apply {
+                description = context.getString(R.string.channel_starting_about)
                 setSound(null, null)
                 enableVibration(false)
                 setShowBadge(false)

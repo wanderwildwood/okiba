@@ -74,7 +74,8 @@
     <string name="channel_ring_about">The warning before a parking meter ends, and its end.</string>
     <string name="channel_ring_fallback">Meter alarm, if Parked cannot play it</string>
     <string name="channel_ring_fallback_about">Used only when Android does not let Parked play the meter alarm itself.</string>
-    <string name="channel_starting">Starting</string>
+    <string name="channel_starting">Meter alarm, getting ready</string>
+    <string name="channel_starting_about">Shown for a moment when there is no meter to ring, and taken away at once.</string>
     <string name="channel_quiet">Meter, quietly</string>
     <!-- %1$d is minutes -->
     <string name="ring_warn_title">Meter runs out in %1$d min</string>
