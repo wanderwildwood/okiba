@@ -31,6 +31,7 @@ import com.wanderwildwood.okiba.ui.RationaleDialog
 import com.wanderwildwood.okiba.ui.monochrome
 import com.wanderwildwood.okiba.ui.DarkSelection
 import com.wanderwildwood.okiba.ui.ArmedScope
+import com.wanderwildwood.okiba.meter.MeterAlarms
 import com.wanderwildwood.okiba.meter.Ringing
 
 class MainActivity : ComponentActivity() {
@@ -52,6 +53,10 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         Ringing.appInFront = true
+        // A force-stop (DuraSpeed, Settings) or taking back exact alarms drops the meter's alarm
+        // and nothing starts the app again; opening it sets the alarm again from what is stored,
+        // and a ring whose time passed meanwhile rings now, or is shown as missed.
+        MeterAlarms.fire(this)
     }
 
     override fun onPause() {
