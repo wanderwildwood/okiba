@@ -57,7 +57,8 @@ object MeterMath {
      * change to or from summer time is still sixty minutes. A time on the ticket is the next time
      * the clock reads it: later today, or tomorrow if it has passed (a ticket bought at 23:50
      * that ends at 00:20). A time the clock skips in spring is moved on by the length of the gap
-     * (02:30 becomes 03:30), and a time it reads twice in autumn is the first of the two.
+     * (02:30 becomes 03:30), and a time it reads twice in autumn is the first of the two, or the
+     * second once the first has passed (set at 01:10 in the repeated hour, 01:50 is forty minutes on).
      */
     fun endFor(choice: MeterChoice, now: Long, zone: ZoneId): Long = when (choice) {
         is MeterChoice.Minutes -> now + choice.minutes.coerceIn(1, MAX_MINUTES) * 60_000L
@@ -65,6 +66,7 @@ object MeterMath {
             val here = Instant.ofEpochMilli(now).atZone(zone)
             val time = LocalTime.of(choice.hour, choice.minute)
             var at = ZonedDateTime.of(here.toLocalDate(), time, zone)
+            if (!at.toInstant().isAfter(here.toInstant())) at = at.withLaterOffsetAtOverlap()
             if (!at.toInstant().isAfter(here.toInstant())) at = ZonedDateTime.of(here.toLocalDate().plusDays(1), time, zone)
             at.toInstant().toEpochMilli()
         }

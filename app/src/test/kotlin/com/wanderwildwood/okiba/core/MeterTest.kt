@@ -95,6 +95,17 @@ class MeterTest {
         assertEquals(60 * min, end - now)
     }
 
+    @Test fun aTicketTimeLaterInTheRepeatedHourIsTheSecondOnceTheFirstHasPassed() {
+        // 01:10 the second time round (standard time): the first 01:50 has gone, the second is near.
+        val now = at(ny, 2026, 11, 1, 1, 10) + 60 * min
+        val end = MeterMath.endFor(MeterChoice.EndsAt(1, 50), now, ny)
+        assertEquals(40 * min, end - now)
+        assertFalse(MeterMath.isLaterDay(end, now, ny))
+        // A time both passes of the hour have gone by is tomorrow's.
+        val passed = MeterMath.endFor(MeterChoice.EndsAt(1, 5), now, ny)
+        assertEquals(LocalDateTime.of(2026, 11, 2, 1, 5), local(ny, passed))
+    }
+
     @Test fun theWarningIsMinutesBeforeTheEnd() {
         val now = 1_000_000L
         val end = now + 120 * min
