@@ -40,8 +40,8 @@ ships with.
   shut it down and its alarm with it; Settings shows that step again. The meter is a reminder:
   check the parking rules and the real meter yourself.
 - The last five spots are kept, newest first; press an earlier one to bring it back to the top.
-- Distances are in meters or feet as the phone's country uses them (from its SIM card, or its
-  language setting), and Settings can fix them to either.
+- Distances are in meters or feet as the phone's country uses them (from its SIM card, the mobile
+  network it is on, or its language setting), and Settings can fix them to either.
 
 A garage or a roof hides the sky, and the GPS may not find a position there. The app says so
 rather than guessing: mark the spot at the entrance, and put the level in the note.

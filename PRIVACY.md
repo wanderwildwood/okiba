@@ -65,8 +65,9 @@ dark with the rest of the phone, and sends Home nothing. A selection-menu entry 
 you selected in the note to the app you choose, and only then. Before opening a link the app
 asks Android which browsers are installed, so the link opens in one.
 
-Whether distances are in meters or feet follows the country of the phone's SIM card, or of its
-language setting when there is no SIM; this is read on the phone and goes nowhere. Settings can
+Whether distances are in meters or feet follows the country of the phone's SIM card, or of the
+mobile network it is on, or of its language setting when there is neither; this is read on the
+phone and goes nowhere. Settings can
 fix it to one or the other.
 
 There are no ads, no analytics and no tracking.
