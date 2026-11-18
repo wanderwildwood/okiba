@@ -19,8 +19,9 @@ this spot** removes one sooner.
 fresh position is not saved.
 
 **Open in maps** and **Share** hand the spot to another app only when you press them, and what
-that app does with it is that app's own business. The shared text holds the coordinates, a `geo:`
-link and an openstreetmap.org link; whoever opens that link shows the place to OpenStreetMap.
+that app does with it is that app's own business. The shared text holds the spot's name and
+time, its note if it has one, the coordinates, a `geo:` link and an openstreetmap.org link;
+whoever opens that link shows the place to OpenStreetMap.
 
 ## The parking meter (from 0.2.0)
 

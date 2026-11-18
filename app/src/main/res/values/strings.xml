@@ -140,7 +140,7 @@
     <string name="about_privacy_title">Privacy</string>
     <string name="about_privacy">Everything you put in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you.</string>
     <string name="about_privacy_more">Location is read from the phone\'s GPS only after you press Mark this spot or How far?, for up to 45 seconds, and never in the background.</string>
-    <string name="about_privacy_spots">Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them. The shared text holds the coordinates and an openstreetmap.org link; whoever opens that link shows the place to OpenStreetMap.</string>
+    <string name="about_privacy_spots">Your last five spots, with their notes, are kept on this phone and removed with the app. Open in maps and Share hand a spot to another app only when you press them. The shared text holds the spot\'s name and time, its note if it has one, the coordinates, a geo: link and an openstreetmap.org link; whoever opens that link shows the place to OpenStreetMap.</string>
     <string name="about_privacy_meter">The meter uses the phone\'s alarms and notifications to ring, and starts again after a restart only to set a running meter\'s alarm again; it reads no location. There are no ads, no analytics and no tracking.</string>
     <string name="about_privacy_links">Feed the llamas opens a donation page run by Square, a payment company, in your browser, and the source link opens GitHub. Nothing from this app goes with either; what you do there is under their own terms.</string>
     <string name="about_terms_title">Terms</string>
