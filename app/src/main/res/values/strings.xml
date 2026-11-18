@@ -56,7 +56,7 @@
     <string name="meter_ended">Meter ran out at %1$s</string>
     <string name="meter_warn_at">Warns at %1$s</string>
     <!-- Under a running meter: Android lets an app ring after a restart only once the phone is unlocked -->
-    <string name="meter_restart_note">If the phone restarts, the meter rings only after the phone is unlocked again.</string>
+    <string name="meter_restart_note">If the phone restarts, the meter rings only after the phone is unlocked again, and a ring more than two minutes late is only shown as missed.</string>
     <string name="meter_cancel">Cancel the meter</string>
     <string name="meter_cancel_armed">Cancel the meter — tap again</string>
     <string name="meter_clear">Clear</string>
